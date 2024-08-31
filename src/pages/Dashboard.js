@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Container, Grid, Paper, Typography, Box, Button, CircularProgress } from "@mui/material";
+import { Container, Grid, Paper, Typography, Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import apiService from "../services/apiService";
 import Loading from "../components/Loading";

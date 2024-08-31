@@ -59,3 +59,5 @@ fx-trading-platform/
 # TODO
 
 -   mock API
+-   add more complex mocked data
+-   change theme to nice one
