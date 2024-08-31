@@ -17,8 +17,8 @@ const Register = lazy(() => import("./pages/Register"));
 
 function App() {
     return (
-        // <ThemeProvider theme={theme}>
-            
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
             <Router>
                 <div className="App">
                     <Header />
@@ -65,7 +65,7 @@ function App() {
                     <Footer />
                 </div>
             </Router>
-        // </ThemeProvider>
+        </ThemeProvider>
     );
 }
 
