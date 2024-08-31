@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useState } from "react";
+import React, { lazy, Suspense, useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import Header from "./components/Header";
@@ -20,16 +20,34 @@ const MarketNews = lazy(() => import("./pages/MarketNews"));
 const EconomicCalendar = lazy(() => import("./pages/EconomicCalendar"));
 
 function App() {
+    const [darkMode, setDarkMode] = useState(false);
+
+    useEffect(() => {
+        const savedMode = localStorage.getItem("darkMode");
+        if (savedMode !== null) {
+            setDarkMode(JSON.parse(savedMode));
+        }
+    }, []);
+
+    const toggleDarkMode = () => {
+        const newMode = !darkMode;
+        setDarkMode(newMode);
+        localStorage.setItem("darkMode", JSON.stringify(newMode));
+    };
+
+    const currentTheme = theme(darkMode);
+
     return (
-        <ThemeProvider theme={theme()}>
+        <ThemeProvider theme={currentTheme}>
             <CssBaseline />
             <Router>
                 <div className="App">
                     <Helmet>
                         <title>FX Trading Platform</title>
                         <meta name="description" content="Modern FX Trading Platform" />
+                        <link rel="manifest" href="/manifest.json" />
                     </Helmet>
-                    <Header />
+                    <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
                     <Suspense fallback={<Loading />}>
                         <Routes>
                             <Route path="/" element={<Navigate to="/login" replace />} />
