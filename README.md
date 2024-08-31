@@ -55,3 +55,7 @@ fx-trading-platform/
 -   Optimize for SEO with React Helmet
 -   Use React.memo and useMemo for performance optimization
 -   Implement progressive web app (PWA) features
+
+# TODO
+
+-   mock API

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Container, Grid, Paper, Typography, Box, Button } from "@mui/material";
+import { Container, Grid, Paper, Typography, Box, Button, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import apiService from "../services/apiService";
 import Loading from "../components/Loading";
@@ -10,18 +10,21 @@ const Dashboard = () => {
     const [accountBalance, setAccountBalance] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [dashboardData, setDashboardData] = useState(null);
     const navigate = useNavigate();
     const theme = useTheme();
 
     const fetchData = async () => {
         try {
             const token = localStorage.getItem("token");
-            const [pairsData, accountData] = await Promise.all([
+            const [pairsData, accountData, dashboardData] = await Promise.all([
                 apiService.getQuotes(["EUR/USD", "GBP/USD", "USD/JPY"]),
                 apiService.getUserAccount(token),
+                apiService.getDashboardData(token),
             ]);
-            setCurrencyPairs(pairsData);
+            setCurrencyPairs(Object.entries(pairsData).map(([symbol, price]) => ({ symbol, price })));
             setAccountBalance(accountData.balance);
+            setDashboardData(dashboardData);
         } catch (error) {
             setError(error.message);
         } finally {
@@ -56,25 +59,25 @@ const Dashboard = () => {
             <Container maxWidth="lg">
                 <Box my={4}>
                     <Typography variant="h4" component="h1" gutterBottom>
-                        dashboard.heading
+                        Dashboard
                     </Typography>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={6}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    dashboard.accountBalance
+                                    Account Balance
                                 </Typography>
                                 {accountBalance !== null ? (
-                                    <Typography variant="h4">${accountBalance.toFixed(2)}</Typography>
+                                    <Typography variant="h4">${accountBalance?.toFixed(2)}</Typography>
                                 ) : (
-                                    <Typography>dashboard.balanceUnavailable</Typography>
+                                    <Typography>Balance unavailable</Typography>
                                 )}
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    dashboard.quickTrade
+                                    Quick Trade
                                 </Typography>
                                 <Button
                                     variant="contained"
@@ -82,14 +85,14 @@ const Dashboard = () => {
                                     onClick={() => navigate("/trading")}
                                     fullWidth
                                 >
-                                    dashboard.startTrading
+                                    Start Trading
                                 </Button>
                             </Paper>
                         </Grid>
                         <Grid item xs={12}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    dashboard.currencyPairs
+                                    Currency Pairs
                                 </Typography>
                                 {sortedCurrencyPairs.length > 0 ? (
                                     <Grid container spacing={2}>
@@ -109,10 +112,44 @@ const Dashboard = () => {
                                         ))}
                                     </Grid>
                                 ) : (
-                                    <Typography>dashboard.noPairsAvailable</Typography>
+                                    <Typography>No currency pairs available</Typography>
                                 )}
                             </Paper>
                         </Grid>
+                        {dashboardData && dashboardData.widgets?.includes("positions") && (
+                            <Grid item xs={12} md={6}>
+                                <Paper elevation={3} sx={{ p: 2 }}>
+                                    <Typography variant="h6" gutterBottom>
+                                        Open Positions
+                                    </Typography>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => navigate("/positions")}
+                                        fullWidth
+                                    >
+                                        View Positions
+                                    </Button>
+                                </Paper>
+                            </Grid>
+                        )}
+                        {dashboardData && dashboardData.widgets?.includes("orders") && (
+                            <Grid item xs={12} md={6}>
+                                <Paper elevation={3} sx={{ p: 2 }}>
+                                    <Typography variant="h6" gutterBottom>
+                                        Recent Orders
+                                    </Typography>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => navigate("/history")}
+                                        fullWidth
+                                    >
+                                        View Order History
+                                    </Button>
+                                </Paper>
+                            </Grid>
+                        )}
                     </Grid>
                 </Box>
             </Container>
