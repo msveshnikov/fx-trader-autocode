@@ -58,29 +58,29 @@ const apiService = {
         });
         return mockResponse(quotes);
     },
-    placeOrder: async (orderData, token) => mockResponse(mockData.orders),
-    getPositions: async (token) => mockResponse(mockData.positions),
-    closePosition: async (positionId, token) => mockResponse({ message: "Position closed" }),
-    getTradeHistory: async (token, startDate, endDate) => {
+    placeOrder: async (orderData) => mockResponse(mockData.orders),
+    getPositions: async () => mockResponse(mockData.positions),
+    closePosition: async (positionId) => mockResponse({ message: "Position closed" }),
+    getTradeHistory: async (startDate, endDate) => {
         const filteredTrades = mockData.trades.filter((trade) => {
             const tradeDate = new Date(trade.date);
             return (!startDate || tradeDate >= new Date(startDate)) && (!endDate || tradeDate <= new Date(endDate));
         });
         return mockResponse(filteredTrades);
     },
-    getUserAccount: async (token) => mockResponse(mockData.account),
-    updateUserAccount: async (accountData, token) => mockResponse({ message: "Account updated" }),
+    getUserAccount: async () => mockResponse(mockData.account),
+    updateUserAccount: async (accountData) => mockResponse({ message: "Account updated" }),
     fetchCurrencyPairs: async () => mockResponse(mockData.currencyPairs),
-    fetchAccountBalance: async (token) => mockResponse({ balance: mockData.account.balance }),
-    getChartData: async (currencyPair, timeframe, token) => mockResponse(mockData.chartData),
-    getRiskMetrics: async (token) => mockResponse(mockData.riskMetrics),
-    setRiskLimits: async (riskLimits, token) => mockResponse({ message: "Risk limits set" }),
-    getNotifications: async (token) => mockResponse(mockData.notifications),
-    markNotificationAsRead: async (notificationId, token) => mockResponse({ message: "Notification marked as read" }),
-    getDashboardData: async (token) => mockResponse(mockData.dashboard),
-    updateDashboardLayout: async (layout, token) => mockResponse({ message: "Dashboard layout updated" }),
-    getMarketNews: async (token) => mockResponse(mockData.marketNews),
-    getEconomicCalendar: async (token) => mockResponse(mockData.economicCalendar),
+    fetchAccountBalance: async () => mockResponse({ balance: mockData.account.balance }),
+    getChartData: async (currencyPair, timeframe) => mockResponse(mockData.chartData),
+    getRiskMetrics: async () => mockResponse(mockData.riskMetrics),
+    setRiskLimits: async (riskLimits) => mockResponse({ message: "Risk limits set" }),
+    getNotifications: async () => mockResponse(mockData.notifications),
+    markNotificationAsRead: async (notificationId) => mockResponse({ message: "Notification marked as read" }),
+    getDashboardData: async () => mockResponse(mockData.dashboard),
+    updateDashboardLayout: async (layout) => mockResponse({ message: "Dashboard layout updated" }),
+    getMarketNews: async () => mockResponse(mockData.marketNews),
+    getEconomicCalendar: async () => mockResponse(mockData.economicCalendar),
 };
 
 export default apiService;

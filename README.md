@@ -15,6 +15,9 @@ This FX Trading Platform is a modern, responsive web application built with Reac
 -   Dark mode / Light mode toggle
 -   Advanced charting tools
 -   Risk management features
+-   Economic calendar
+-   Market news integration
+-   Multi-language support
 
 ## Technical Stack
 
@@ -22,6 +25,8 @@ This FX Trading Platform is a modern, responsive web application built with Reac
 -   MUI5 for UI components
 -   React Router v6 for navigation
 -   Fetch API for backend communication
+-   React Context API for state management
+-   React Query for data fetching and caching
 
 ## Project Structure
 
@@ -37,6 +42,7 @@ fx-trading-platform/
 │   ├── services/
 │   ├── utils/
 │   ├── hooks/
+│   ├── contexts/
 │   ├── App.js
 │   └── index.js
 ├── package.json
@@ -55,18 +61,8 @@ fx-trading-platform/
 -   Optimize for SEO with React Helmet
 -   Use React.memo and useMemo for performance optimization
 -   Implement progressive web app (PWA) features
-
-# TODO
-
--   mock API
--   add more complex mocked data
--   change theme to nice one
-
-ERROR in ./src/pages/EconomicCalendar.js 16:27-48
-export 'fetchEconomicCalendar' (imported as 'fetchEconomicCalendar') was not found in '../services/apiService' (possible exports: default)
-ERROR in ./src/pages/MarketNews.js 17:31-46
-export 'fetchMarketNews' (imported as 'fetchMarketNews') was not found in '../services/apiService' (possible exports: default)
-ERROR in ./src/pages/RiskManagement.js 24:30-46
-export 'fetchRiskMetrics' (imported as 'fetchRiskMetrics') was not found in '../services/apiService' (possible exports: default)
-ERROR in ./src/pages/RiskManagement.js 44:12-28
-export 'updateRiskLimits' (imported as 'updateRiskLimits') was not found in '../services/apiService' (possible exports: default)
+-   Utilize React Context API for global state management
+-   Implement React Query for efficient data fetching and caching
+-   Add CI/CD pipeline for automated testing and deployment
+-   Implement GraphQL for more efficient API queries
+-   Use React Spring for smooth animations and transitions

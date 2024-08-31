@@ -1,14 +1,27 @@
 import React, { useState } from "react";
-import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, useTheme } from "@mui/material";
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    IconButton,
+    Menu,
+    MenuItem,
+    useTheme,
+    useMediaQuery,
+    Box,
+} from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-
+import LanguageIcon from "@mui/icons-material/Language";
 // eslint-disable-next-line react/prop-types
-const Header = ({ toggleTheme }) => {
+const Header = ({ toggleTheme, changeLanguage }) => {
     const [anchorEl, setAnchorEl] = useState(null);
+    const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -18,61 +31,67 @@ const Header = ({ toggleTheme }) => {
         setAnchorEl(null);
     };
 
+    const handleLanguageMenu = (event) => {
+        setLanguageAnchorEl(event.currentTarget);
+    };
+
+    const handleLanguageClose = () => {
+        setLanguageAnchorEl(null);
+    };
+
+    const handleLanguageChange = (lang) => {
+        changeLanguage(lang);
+        handleLanguageClose();
+    };
+
+    const menuItems = [
+        { label: "Dashboard", path: "/dashboard" },
+        { label: "Trading", path: "/trading" },
+        { label: "Positions", path: "/positions" },
+        { label: "History", path: "/history" },
+        { label: "Risk Management", path: "/risk-management" },
+        { label: "Market News", path: "/market-news" },
+        { label: "Economic Calendar", path: "/economic-calendar" },
+    ];
+
     return (
         <AppBar position="static">
             <Toolbar>
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    onClick={handleMenu}
-                    sx={{ mr: 2 }}
-                >
-                    <MenuIcon />
-                </IconButton>
-                <Menu
-                    id="menu-appbar"
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                    }}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                >
-                    <MenuItem component={RouterLink} to="/dashboard" onClick={handleClose}>
-                        Dashboard
-                    </MenuItem>
-                    <MenuItem component={RouterLink} to="/trading" onClick={handleClose}>
-                        Trading
-                    </MenuItem>
-                    <MenuItem component={RouterLink} to="/positions" onClick={handleClose}>
-                        Positions
-                    </MenuItem>
-                    <MenuItem component={RouterLink} to="/history" onClick={handleClose}>
-                        History
-                    </MenuItem>
-                    <MenuItem component={RouterLink} to="/risk-management" onClick={handleClose}>
-                        Risk Management
-                    </MenuItem>
-                    <MenuItem component={RouterLink} to="/market-news" onClick={handleClose}>
-                        Market News
-                    </MenuItem>
-                    <MenuItem component={RouterLink} to="/economic-calendar" onClick={handleClose}>
-                        Economic Calendar
-                    </MenuItem>
-                </Menu>
+                {isMobile && (
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={handleMenu}
+                        sx={{ mr: 2 }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                )}
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                     FX Trading Platform
                 </Typography>
+                {!isMobile && (
+                    <Box sx={{ display: "flex" }}>
+                        {menuItems.map((item) => (
+                            <Button
+                                key={item.path}
+                                color="inherit"
+                                component={RouterLink}
+                                to={item.path}
+                                sx={{ mx: 1 }}
+                            >
+                                {item.label}
+                            </Button>
+                        ))}
+                    </Box>
+                )}
                 <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color="inherit">
                     {theme.palette.mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+                </IconButton>
+                <IconButton sx={{ ml: 1 }} onClick={handleLanguageMenu} color="inherit">
+                    <LanguageIcon />
                 </IconButton>
                 <Button color="inherit" component={RouterLink} to="/account">
                     Account
@@ -81,6 +100,37 @@ const Header = ({ toggleTheme }) => {
                     Login
                 </Button>
             </Toolbar>
+            <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+            >
+                {menuItems.map((item) => (
+                    <MenuItem key={item.path} component={RouterLink} to={item.path} onClick={handleClose}>
+                        {item.label}
+                    </MenuItem>
+                ))}
+            </Menu>
+            <Menu
+                id="language-menu"
+                anchorEl={languageAnchorEl}
+                open={Boolean(languageAnchorEl)}
+                onClose={handleLanguageClose}
+            >
+                <MenuItem onClick={() => handleLanguageChange("en")}>English</MenuItem>
+                <MenuItem onClick={() => handleLanguageChange("es")}>Español</MenuItem>
+                <MenuItem onClick={() => handleLanguageChange("fr")}>Français</MenuItem>
+            </Menu>
         </AppBar>
     );
 };

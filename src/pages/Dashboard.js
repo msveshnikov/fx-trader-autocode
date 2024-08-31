@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Container, Grid, Paper, Typography, Box, Button } from "@mui/material";
+import { Container, Grid, Paper, Typography, Box, Button, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import apiService from "../services/apiService";
-import Loading from "../components/Loading";
 import { useTheme } from "@mui/material/styles";
+import { Helmet } from "react-helmet";
 
 const Dashboard = () => {
     const [currencyPairs, setCurrencyPairs] = useState([]);
@@ -43,7 +43,11 @@ const Dashboard = () => {
     }, [currencyPairs]);
 
     if (loading) {
-        return <Loading />;
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                <CircularProgress />
+            </Box>
+        );
     }
 
     if (error) {
@@ -56,6 +60,13 @@ const Dashboard = () => {
 
     return (
         <>
+            <Helmet>
+                <title>Dashboard - FX Trading Platform</title>
+                <meta
+                    name="description"
+                    content="View your FX trading dashboard with real-time currency pair quotes and account information."
+                />
+            </Helmet>
             <Container maxWidth="lg">
                 <Box my={4}>
                     <Typography variant="h4" component="h1" gutterBottom>
@@ -147,6 +158,18 @@ const Dashboard = () => {
                                     >
                                         View Order History
                                     </Button>
+                                </Paper>
+                            </Grid>
+                        )}
+                        {dashboardData && dashboardData.widgets?.includes("chart") && (
+                            <Grid item xs={12}>
+                                <Paper elevation={3} sx={{ p: 2 }}>
+                                    <Typography variant="h6" gutterBottom>
+                                        Market Chart
+                                    </Typography>
+                                    <Box height={300} display="flex" justifyContent="center" alignItems="center">
+                                        <Typography variant="body1">Chart placeholder</Typography>
+                                    </Box>
                                 </Paper>
                             </Grid>
                         )}

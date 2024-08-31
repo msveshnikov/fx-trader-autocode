@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     Container,
     Grid,
@@ -16,7 +16,11 @@ import {
     MenuItem,
     FormControl,
     InputLabel,
+    Box,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import apiService from "../services/apiService";
+import Loading from "../components/Loading";
 
 const Trading = () => {
     const [currencyPairs, setCurrencyPairs] = useState([]);
@@ -25,57 +29,61 @@ const Trading = () => {
     const [amount, setAmount] = useState("");
     const [price, setPrice] = useState("");
     const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const theme = useTheme();
 
-    useEffect(() => {
-        fetchCurrencyPairs();
-        fetchOrders();
-    }, []);
-
-    const fetchCurrencyPairs = async () => {
+    const fetchCurrencyPairs = useCallback(async () => {
         try {
-            const response = await fetch("/api/currency-pairs");
-            const data = await response.json();
+            const data = await apiService.fetchCurrencyPairs();
             setCurrencyPairs(data);
         } catch (error) {
-            console.error("Error fetching currency pairs:", error);
+            setError("Error fetching currency pairs: " + error.message);
         }
-    };
+    }, []);
 
-    const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
         try {
-            const response = await fetch("/api/orders");
-            const data = await response.json();
+            const token = localStorage.getItem("token");
+            const data = await apiService.getPositions(token);
             setOrders(data);
         } catch (error) {
-            console.error("Error fetching orders:", error);
+            setError("Error fetching orders: " + error.message);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await Promise.all([fetchCurrencyPairs(), fetchOrders()]);
+            setLoading(false);
+        };
+        fetchData();
+    }, [fetchCurrencyPairs, fetchOrders]);
 
     const handlePlaceOrder = async () => {
         try {
-            const response = await fetch("/api/orders", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
+            const token = localStorage.getItem("token");
+            await apiService.placeOrder(
+                {
                     currencyPair: selectedPair,
                     orderType,
-                    amount,
-                    price: orderType === "limit" ? price : null,
-                }),
-            });
-            if (response.ok) {
-                fetchOrders();
-                setSelectedPair("");
-                setOrderType("market");
-                setAmount("");
-                setPrice("");
-            }
+                    amount: parseFloat(amount),
+                    price: orderType === "limit" ? parseFloat(price) : null,
+                },
+                token
+            );
+            await fetchOrders();
+            setSelectedPair("");
+            setOrderType("market");
+            setAmount("");
+            setPrice("");
         } catch (error) {
-            console.error("Error placing order:", error);
+            setError("Error placing order: " + error.message);
         }
     };
+
+    if (loading) return <Loading />;
+    if (error) return <Typography color="error">{error}</Typography>;
 
     return (
         <Container maxWidth="lg">
@@ -92,8 +100,8 @@ const Trading = () => {
                             <InputLabel>Currency Pair</InputLabel>
                             <Select value={selectedPair} onChange={(e) => setSelectedPair(e.target.value)}>
                                 {currencyPairs.map((pair) => (
-                                    <MenuItem key={pair.id} value={pair.symbol}>
-                                        {pair.symbol}
+                                    <MenuItem key={pair} value={pair}>
+                                        {pair}
                                     </MenuItem>
                                 ))}
                             </Select>
@@ -131,7 +139,7 @@ const Trading = () => {
                 <Grid item xs={12} md={6}>
                     <Paper elevation={3} sx={{ p: 2 }}>
                         <Typography variant="h6" gutterBottom>
-                            Open Orders
+                            Open Positions
                         </Typography>
                         <TableContainer>
                             <Table>
@@ -147,7 +155,7 @@ const Trading = () => {
                                 <TableBody>
                                     {orders.map((order) => (
                                         <TableRow key={order.id}>
-                                            <TableCell>{order.currencyPair}</TableCell>
+                                            <TableCell>{order.pair}</TableCell>
                                             <TableCell>{order.type}</TableCell>
                                             <TableCell>{order.amount}</TableCell>
                                             <TableCell>{order.price || "Market"}</TableCell>
@@ -160,6 +168,28 @@ const Trading = () => {
                     </Paper>
                 </Grid>
             </Grid>
+            <Box mt={4}>
+                <Typography variant="h6" gutterBottom>
+                    Real-time Quotes
+                </Typography>
+                <Grid container spacing={2}>
+                    {currencyPairs.map((pair) => (
+                        <Grid item xs={12} sm={6} md={4} key={pair}>
+                            <Paper
+                                elevation={3}
+                                sx={{
+                                    p: 2,
+                                    textAlign: "center",
+                                    backgroundColor: theme.palette.background.default,
+                                }}
+                            >
+                                <Typography variant="subtitle1">{pair}</Typography>
+                                <Typography variant="h6">{(Math.random() * (1.5 - 0.5) + 0.5).toFixed(4)}</Typography>
+                            </Paper>
+                        </Grid>
+                    ))}
+                </Grid>
+            </Box>
         </Container>
     );
 };
