@@ -61,3 +61,12 @@ fx-trading-platform/
 -   mock API
 -   add more complex mocked data
 -   change theme to nice one
+
+ERROR in ./src/pages/EconomicCalendar.js 16:27-48
+export 'fetchEconomicCalendar' (imported as 'fetchEconomicCalendar') was not found in '../services/apiService' (possible exports: default)
+ERROR in ./src/pages/MarketNews.js 17:31-46
+export 'fetchMarketNews' (imported as 'fetchMarketNews') was not found in '../services/apiService' (possible exports: default)
+ERROR in ./src/pages/RiskManagement.js 24:30-46
+export 'fetchRiskMetrics' (imported as 'fetchRiskMetrics') was not found in '../services/apiService' (possible exports: default)
+ERROR in ./src/pages/RiskManagement.js 44:12-28
+export 'updateRiskLimits' (imported as 'updateRiskLimits') was not found in '../services/apiService' (possible exports: default)
