@@ -7,7 +7,7 @@ import Loading from "./components/Loading";
 import PrivateRoute from "./components/PrivateRoute";
 import theme from "./utils/theme";
 
-// const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Trading = lazy(() => import("./pages/Trading"));
 const Positions = lazy(() => import("./pages/Positions"));
 const History = lazy(() => import("./pages/History"));
@@ -17,8 +17,8 @@ const Register = lazy(() => import("./pages/Register"));
 
 function App() {
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
+        // <ThemeProvider theme={theme}>
+            
             <Router>
                 <div className="App">
                     <Header />
@@ -27,7 +27,7 @@ function App() {
                             <Route path="/" element={<Navigate to="/login" replace />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
-                            <Route path="/dashboard" element={<PrivateRoute>{/* <Dashboard /> */}</PrivateRoute>} />
+                            <Route path="/dashboard" element={<PrivateRoute>{<Dashboard />}</PrivateRoute>} />
                             <Route
                                 path="/trading"
                                 element={
@@ -65,7 +65,7 @@ function App() {
                     <Footer />
                 </div>
             </Router>
-        </ThemeProvider>
+        // </ThemeProvider>
     );
 }
 
