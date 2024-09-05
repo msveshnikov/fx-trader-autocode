@@ -1,59 +1,71 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Container, Grid, Paper, Typography, Box, Button, CircularProgress } from "@mui/material";
+import {
+    Container,
+    Grid,
+    Paper,
+    Typography,
+    Box,
+    Button,
+    CircularProgress,
+    useMediaQuery,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import apiService from "../services/apiService";
 import { useTheme } from "@mui/material/styles";
 import { Helmet } from "react-helmet";
+import { useQuery } from "react-query";
+import apiService from "../services/apiService";
+import Loading from "../components/Loading";
 
 const Dashboard = () => {
     const [currencyPairs, setCurrencyPairs] = useState([]);
     const [accountBalance, setAccountBalance] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [dashboardData, setDashboardData] = useState(null);
     const navigate = useNavigate();
     const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-    const fetchData = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const [pairsData, accountData, dashboardData] = await Promise.all([
-                apiService.getQuotes(["EUR/USD", "GBP/USD", "USD/JPY"]),
-                apiService.getUserAccount(token),
-                apiService.getDashboardData(token),
-            ]);
-            setCurrencyPairs(Object.entries(pairsData).map(([symbol, price]) => ({ symbol, price })));
-            setAccountBalance(accountData.balance);
-            setDashboardData(dashboardData);
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { data: quotesData, isLoading: quotesLoading, error: quotesError } = useQuery(
+        "quotes",
+        () => apiService.getQuotes(["EUR/USD", "GBP/USD", "USD/JPY"]),
+        { refetchInterval: 10000 }
+    );
+
+    const { data: accountData, isLoading: accountLoading, error: accountError } = useQuery(
+        "account",
+        () => apiService.getUserAccount(localStorage.getItem("token"))
+    );
+
+    const { data: dashboardConfig, isLoading: dashboardLoading, error: dashboardError } = useQuery(
+        "dashboard",
+        () => apiService.getDashboardData(localStorage.getItem("token"))
+    );
 
     useEffect(() => {
-        fetchData();
-        const intervalId = setInterval(fetchData, 10000);
-        return () => clearInterval(intervalId);
-    }, []);
+        if (quotesData) {
+            setCurrencyPairs(Object.entries(quotesData).map(([symbol, price]) => ({ symbol, price })));
+        }
+        if (accountData) {
+            setAccountBalance(accountData.balance);
+        }
+        if (dashboardConfig) {
+            setDashboardData(dashboardConfig);
+        }
+    }, [quotesData, accountData, dashboardConfig]);
 
     const sortedCurrencyPairs = useMemo(() => {
         return [...currencyPairs].sort((a, b) => a.symbol.localeCompare(b.symbol));
     }, [currencyPairs]);
 
-    if (loading) {
-        return (
-            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                <CircularProgress />
-            </Box>
-        );
+    if (quotesLoading || accountLoading || dashboardLoading) {
+        return <Loading />;
     }
 
-    if (error) {
+    if (quotesError || accountError || dashboardError) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-                <Typography color="error">{error}</Typography>
+                <Typography color="error">
+                    {quotesError?.message || accountError?.message || dashboardError?.message}
+                </Typography>
             </Box>
         );
     }

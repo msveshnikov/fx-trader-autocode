@@ -1,86 +1,179 @@
 // src/services/apiService.js
 
-const mockData = {
-    login: { token: "mock_token" },
-    register: { message: "User registered successfully" },
-    quotes: { "EUR/USD": 1.1234, "GBP/USD": 1.3456, "USD/JPY": 110.67 },
-    orders: { id: "order123", status: "executed" },
-    positions: [{ id: "pos1", pair: "EUR/USD", amount: 10000 }],
-    trades: [
-        {
-            id: "trade1",
-            pair: "EUR/USD",
-            amount: 10000,
-            profit: 100,
-            date: "2023-07-01T12:00:00Z",
-            type: "buy",
-            price: 1.1234,
-            status: "closed",
-        },
-        {
-            id: "trade2",
-            pair: "GBP/USD",
-            amount: 5000,
-            profit: -50,
-            date: "2023-07-02T14:30:00Z",
-            type: "sell",
-            price: 1.3456,
-            status: "closed",
-        },
-    ],
-    account: { name: "John Doe", email: "john@example.com", balance: 50000 },
-    currencyPairs: ["EUR/USD", "GBP/USD", "USD/JPY"],
-    chartData: [
-        { timestamp: 1625097600, open: 1.1234, high: 1.1256, low: 1.1212, close: 1.1245 },
-        { timestamp: 1625184000, open: 1.1245, high: 1.1278, low: 1.1234, close: 1.1267 },
-    ],
-    riskMetrics: { maxDrawdown: 5, sharpeRatio: 1.5 },
-    notifications: [{ id: "notif1", message: "New market update", read: false }],
-    dashboard: { widgets: ["chart", "positions", "orders"] },
-    marketNews: [{ id: "news1", title: "Market Update", content: "Lorem ipsum" }],
-    economicCalendar: [{ date: "2023-07-01", event: "NFP Report" }],
-};
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://api.example.com";
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const mockResponse = async (data) => {
-    await delay(300);
-    return { json: async () => data, ok: true };
+const handleResponse = async (response) => {
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "An error occurred");
+  }
+  return response.json();
 };
 
 const apiService = {
-    login: async (credentials) => mockResponse(mockData.login),
-    register: async (userData) => mockResponse(mockData.register),
-    getQuotes: async (currencyPairs) => {
-        const quotes = {};
-        currencyPairs.forEach((pair) => {
-            quotes[pair] = mockData.quotes[pair];
-        });
-        return mockResponse(quotes);
-    },
-    placeOrder: async (orderData) => mockResponse(mockData.orders),
-    getPositions: async () => mockResponse(mockData.positions),
-    closePosition: async (positionId) => mockResponse({ message: "Position closed" }),
-    getTradeHistory: async (startDate, endDate) => {
-        const filteredTrades = mockData.trades.filter((trade) => {
-            const tradeDate = new Date(trade.date);
-            return (!startDate || tradeDate >= new Date(startDate)) && (!endDate || tradeDate <= new Date(endDate));
-        });
-        return mockResponse(filteredTrades);
-    },
-    getUserAccount: async () => mockResponse(mockData.account),
-    updateUserAccount: async (accountData) => mockResponse({ message: "Account updated" }),
-    fetchCurrencyPairs: async () => mockResponse(mockData.currencyPairs),
-    fetchAccountBalance: async () => mockResponse({ balance: mockData.account.balance }),
-    getChartData: async (currencyPair, timeframe) => mockResponse(mockData.chartData),
-    getRiskMetrics: async () => mockResponse(mockData.riskMetrics),
-    setRiskLimits: async (riskLimits) => mockResponse({ message: "Risk limits set" }),
-    getNotifications: async () => mockResponse(mockData.notifications),
-    markNotificationAsRead: async (notificationId) => mockResponse({ message: "Notification marked as read" }),
-    getDashboardData: async () => mockResponse(mockData.dashboard),
-    updateDashboardLayout: async (layout) => mockResponse({ message: "Dashboard layout updated" }),
-    getMarketNews: async () => mockResponse(mockData.marketNews),
-    getEconomicCalendar: async () => mockResponse(mockData.economicCalendar),
+  login: async (credentials) => {
+    const response = await fetch(`${BASE_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credentials),
+    });
+    return handleResponse(response);
+  },
+
+  register: async (userData) => {
+    const response = await fetch(`${BASE_URL}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(userData),
+    });
+    return handleResponse(response);
+  },
+
+  getQuotes: async (currencyPairs) => {
+    const response = await fetch(`${BASE_URL}/quotes?pairs=${currencyPairs.join(",")}`);
+    return handleResponse(response);
+  },
+
+  placeOrder: async (orderData, token) => {
+    const response = await fetch(`${BASE_URL}/orders`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(orderData),
+    });
+    return handleResponse(response);
+  },
+
+  getPositions: async (token) => {
+    const response = await fetch(`${BASE_URL}/positions`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
+  },
+
+  closePosition: async (positionId, token) => {
+    const response = await fetch(`${BASE_URL}/positions/${positionId}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
+  },
+
+  getTradeHistory: async (token, startDate, endDate) => {
+    const response = await fetch(
+      `${BASE_URL}/trades?startDate=${startDate}&endDate=${endDate}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return handleResponse(response);
+  },
+
+  getUserAccount: async (token) => {
+    const response = await fetch(`${BASE_URL}/account`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
+  },
+
+  updateUserAccount: async (accountData, token) => {
+    const response = await fetch(`${BASE_URL}/account`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(accountData),
+    });
+    return handleResponse(response);
+  },
+
+  fetchCurrencyPairs: async () => {
+    const response = await fetch(`${BASE_URL}/currency-pairs`);
+    return handleResponse(response);
+  },
+
+  fetchAccountBalance: async (token) => {
+    const response = await fetch(`${BASE_URL}/account/balance`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
+  },
+
+  getChartData: async (currencyPair, timeframe, token) => {
+    const response = await fetch(
+      `${BASE_URL}/chart-data?pair=${currencyPair}&timeframe=${timeframe}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return handleResponse(response);
+  },
+
+  getRiskMetrics: async (token) => {
+    const response = await fetch(`${BASE_URL}/risk-metrics`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
+  },
+
+  updateRiskLimits: async (riskLimits, token) => {
+    const response = await fetch(`${BASE_URL}/risk-limits`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(riskLimits),
+    });
+    return handleResponse(response);
+  },
+
+  getNotifications: async (token) => {
+    const response = await fetch(`${BASE_URL}/notifications`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
+  },
+
+  markNotificationAsRead: async (notificationId, token) => {
+    const response = await fetch(`${BASE_URL}/notifications/${notificationId}`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
+  },
+
+  getDashboardData: async (token) => {
+    const response = await fetch(`${BASE_URL}/dashboard`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return handleResponse(response);
+  },
+
+  updateDashboardLayout: async (layout, token) => {
+    const response = await fetch(`${BASE_URL}/dashboard/layout`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(layout),
+    });
+    return handleResponse(response);
+  },
+
+  getMarketNews: async () => {
+    const response = await fetch(`${BASE_URL}/market-news`);
+    return handleResponse(response);
+  },
+
+  getEconomicCalendar: async () => {
+    const response = await fetch(`${BASE_URL}/economic-calendar`);
+    return handleResponse(response);
+  },
 };
 
 export default apiService;

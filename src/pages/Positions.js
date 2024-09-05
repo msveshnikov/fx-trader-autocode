@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     Container,
     Typography,
@@ -10,33 +10,59 @@ import {
     TableRow,
     Paper,
     Button,
+    CircularProgress,
+    Box,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import apiService from "../services/apiService";
 
 const Positions = () => {
     const [positions, setPositions] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const theme = useTheme();
+
+    const fetchPositions = useCallback(async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const data = await apiService.getPositions(token);
+            setPositions(data);
+            setLoading(false);
+        } catch (error) {
+            setError("Error fetching positions: " + error.message);
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
         fetchPositions();
-    }, []);
-
-    const fetchPositions = async () => {
-        try {
-            const response = await fetch("/api/positions");
-            const data = await response.json();
-            setPositions(data);
-        } catch (error) {
-            console.error("Error fetching positions:", error);
-        }
-    };
+    }, [fetchPositions]);
 
     const closePosition = async (positionId) => {
         try {
-            await fetch(`/api/positions/${positionId}`, { method: "DELETE" });
+            const token = localStorage.getItem("token");
+            await apiService.closePosition(positionId, token);
             fetchPositions();
         } catch (error) {
-            console.error("Error closing position:", error);
+            setError("Error closing position: " + error.message);
         }
     };
+
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                <Typography color="error">{error}</Typography>
+            </Box>
+        );
+    }
 
     return (
         <Container maxWidth="lg">
@@ -64,7 +90,17 @@ const Positions = () => {
                                 <TableCell align="right">{position.size}</TableCell>
                                 <TableCell align="right">{position.entryPrice}</TableCell>
                                 <TableCell align="right">{position.currentPrice}</TableCell>
-                                <TableCell align="right">{position.profitLoss}</TableCell>
+                                <TableCell
+                                    align="right"
+                                    style={{
+                                        color:
+                                            position.profitLoss >= 0
+                                                ? theme.palette.success.main
+                                                : theme.palette.error.main,
+                                    }}
+                                >
+                                    {position.profitLoss}
+                                </TableCell>
                                 <TableCell align="right">
                                     <Button
                                         variant="contained"

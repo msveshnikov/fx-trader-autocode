@@ -14,9 +14,10 @@ import {
     Box,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-// import { format } from "date-fns";
+import { format } from "date-fns";
 import apiService from "../services/apiService";
 import Loading from "../components/Loading";
+import { useTheme } from "@mui/material/styles";
 
 const History = () => {
     const [trades, setTrades] = useState([]);
@@ -24,6 +25,7 @@ const History = () => {
     const [endDate, setEndDate] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const theme = useTheme();
 
     useEffect(() => {
         fetchTradeHistory();
@@ -100,12 +102,21 @@ const History = () => {
                     <TableBody>
                         {sortedTrades.map((trade) => (
                             <TableRow key={trade.id}>
-                                <TableCell>{(new Date(trade.date), "yyyy-MM-dd HH:mm:ss")}</TableCell>
+                                <TableCell>{format(new Date(trade.date), "yyyy-MM-dd HH:mm:ss")}</TableCell>
                                 <TableCell>{trade.pair}</TableCell>
                                 <TableCell>{trade.type}</TableCell>
                                 <TableCell>{trade.amount}</TableCell>
                                 <TableCell>{trade.price}</TableCell>
-                                <TableCell>{trade.profit}</TableCell>
+                                <TableCell
+                                    sx={{
+                                        color:
+                                            trade.profit > 0
+                                                ? theme.palette.success.main
+                                                : theme.palette.error.main,
+                                    }}
+                                >
+                                    {trade.profit}
+                                </TableCell>
                                 <TableCell>{trade.status}</TableCell>
                             </TableRow>
                         ))}

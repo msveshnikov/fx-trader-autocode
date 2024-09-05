@@ -1,43 +1,33 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { TextField, Button, Typography, Box, Container, Paper } from "@mui/material";
+import { TextField, Button, Typography, Box, Container, Paper, Alert } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import apiService from "../services/apiService";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
+    const theme = useTheme();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
 
         try {
-            const response = await fetch("/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem("token", data.token);
-                navigate("/dashboard");
-            } else {
-                const errorData = await response.json();
-                setError(errorData.message || "Login failed");
-            }
+            const response = await apiService.login({ email, password });
+            localStorage.setItem("token", response.token);
+            navigate("/dashboard");
         } catch (err) {
-            setError("An error occurred. Please try again.");
+            setError(err.message || "Login failed. Please try again.");
         }
     };
 
     return (
         <Container component="main" maxWidth="xs">
-            <Paper elevation={3} sx={{ marginTop: 8, padding: 4 }}>
-                <Typography component="h1" variant="h5" align="center">
+            <Paper elevation={3} sx={{ marginTop: 8, padding: 4, backgroundColor: theme.palette.background.paper }}>
+                <Typography component="h1" variant="h5" align="center" color="textPrimary">
                     Log in
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
@@ -52,6 +42,7 @@ const Login = () => {
                         autoFocus
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        color="primary"
                     />
                     <TextField
                         margin="normal"
@@ -64,20 +55,19 @@ const Login = () => {
                         autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        color="primary"
                     />
                     {error && (
-                        <Typography color="error" align="center" sx={{ mt: 2 }}>
+                        <Alert severity="error" sx={{ mt: 2 }}>
                             {error}
-                        </Typography>
+                        </Alert>
                     )}
-                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} color="primary">
                         Sign In
                     </Button>
                     <Box sx={{ textAlign: "center" }}>
-                        <Link to="/register" style={{ textDecoration: "none" }}>
-                            <Typography variant="body2" color="primary">
-                                Don&apos;t have an account? Sign Up
-                            </Typography>
+                        <Link to="/register" style={{ textDecoration: "none", color: theme.palette.primary.main }}>
+                            <Typography variant="body2">Don&apos;t have an account? Sign Up</Typography>
                         </Link>
                     </Box>
                 </Box>

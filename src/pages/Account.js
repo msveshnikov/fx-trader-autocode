@@ -1,5 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Box, Typography, TextField, Button, Paper, Grid } from "@mui/material";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+    Box,
+    Typography,
+    TextField,
+    Button,
+    Paper,
+    Grid,
+    CircularProgress,
+    Alert,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import apiService from "../services/apiService";
 
 const Account = () => {
     const [user, setUser] = useState({
@@ -7,23 +18,26 @@ const Account = () => {
         email: "",
         balance: 0,
     });
-
     const [isEditing, setIsEditing] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState("");
+    const theme = useTheme();
+
+    const fetchUserData = useCallback(async () => {
+        try {
+            const data = await apiService.getUserAccount();
+            setUser(data);
+            setLoading(false);
+        } catch (error) {
+            setError("Error fetching user data: " + error.message);
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
-        // Fetch user data from API
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch("/api/user");
-                const data = await response.json();
-                setUser(data);
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-
         fetchUserData();
-    }, []);
+    }, [fetchUserData]);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -35,29 +49,42 @@ const Account = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setLoading(true);
         try {
-            const response = await fetch("/api/user", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
-            });
-            if (response.ok) {
-                setIsEditing(false);
-            } else {
-                console.error("Error updating user data");
-            }
+            await apiService.updateUserAccount(user);
+            setIsEditing(false);
+            setSuccessMessage("Account updated successfully");
+            await fetchUserData();
         } catch (error) {
-            console.error("Error updating user data:", error);
+            setError("Error updating user data: " + error.message);
+        } finally {
+            setLoading(false);
         }
     };
+
+    if (loading) {
+        return (
+            <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+                <CircularProgress />
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ flexGrow: 1, padding: 3 }}>
             <Typography variant="h4" gutterBottom>
                 Account Details
             </Typography>
+            {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                    {error}
+                </Alert>
+            )}
+            {successMessage && (
+                <Alert severity="success" sx={{ mb: 2 }}>
+                    {successMessage}
+                </Alert>
+            )}
             <Paper elevation={3} sx={{ padding: 3 }}>
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
@@ -83,20 +110,33 @@ const Account = () => {
                             />
                         </Grid>
                         <Grid item xs={12}>
-                            <Typography variant="h6">Account Balance: ${user.balance.toFixed(2)}</Typography>
+                            <Typography variant="h6">
+                                Account Balance: ${user.balance.toFixed(2)}
+                            </Typography>
                         </Grid>
                         <Grid item xs={12}>
                             {isEditing ? (
                                 <>
-                                    <Button type="submit" variant="contained" color="primary" sx={{ marginRight: 2 }}>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        sx={{ marginRight: 2 }}
+                                    >
                                         Save Changes
                                     </Button>
-                                    <Button variant="outlined" onClick={() => setIsEditing(false)}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => setIsEditing(false)}
+                                    >
                                         Cancel
                                     </Button>
                                 </>
                             ) : (
-                                <Button variant="contained" onClick={() => setIsEditing(true)}>
+                                <Button
+                                    variant="contained"
+                                    onClick={() => setIsEditing(true)}
+                                >
                                     Edit Profile
                                 </Button>
                             )}

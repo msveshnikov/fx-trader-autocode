@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Typography, TextField, Button, Box, Grid, Paper } from "@mui/material";
+import { Container, Typography, TextField, Button, Box, Grid, Paper, Alert } from "@mui/material";
+import apiService from "../services/apiService";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ const Register = () => {
         confirmPassword: "",
     });
     const [errors, setErrors] = useState({});
+    const [alertMessage, setAlertMessage] = useState("");
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -46,12 +48,13 @@ const Register = () => {
         e.preventDefault();
         if (validateForm()) {
             try {
-                // TODO: Implement registration API call
-                console.log("Registration successful", formData);
-                navigate("/login");
+                const response = await apiService.register(formData);
+                setAlertMessage("Registration successful. Please log in.");
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
             } catch (error) {
-                console.error("Registration failed", error);
-                setErrors({ submit: "Registration failed. Please try again." });
+                setAlertMessage("Registration failed. Please try again.");
             }
         }
     };
@@ -62,6 +65,11 @@ const Register = () => {
                 <Typography component="h1" variant="h5" align="center">
                     Register
                 </Typography>
+                {alertMessage && (
+                    <Alert severity="info" onClose={() => setAlertMessage("")} sx={{ mt: 2 }}>
+                        {alertMessage}
+                    </Alert>
+                )}
                 <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
@@ -112,11 +120,6 @@ const Register = () => {
                             />
                         </Grid>
                     </Grid>
-                    {errors.submit && (
-                        <Typography color="error" align="center" sx={{ mt: 2 }}>
-                            {errors.submit}
-                        </Typography>
-                    )}
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                         Register
                     </Button>
