@@ -1,150 +1,164 @@
 /* eslint-disable react/prop-types */
-import React, { useState, useContext } from "react";
+import React, { useState, useContext } from 'react';
 import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  useTheme,
-  useMediaQuery,
-  Box,
-} from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import LanguageIcon from "@mui/icons-material/Language";
-import { LanguageContext } from "../contexts/LanguageContext";
+    AppBar,
+    Toolbar,
+    Typography,
+    Button,
+    IconButton,
+    Menu,
+    MenuItem,
+    useTheme,
+    useMediaQuery,
+    Box
+} from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import MenuIcon from '@mui/icons-material/Menu';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import LanguageIcon from '@mui/icons-material/Language';
+import { LanguageContext } from '../contexts/LanguageContext';
 
 const Header = ({ toggleTheme }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  // const { language, changeLanguage } = useContext(LanguageContext);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    // const { language, changeLanguage } = useContext(LanguageContext);
 
-  const handleMenu = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
-  const handleLanguageMenu = (event) => {
-    setLanguageAnchorEl(event.currentTarget);
-  };
+    const handleLanguageMenu = (event) => {
+        setLanguageAnchorEl(event.currentTarget);
+    };
 
-  const handleLanguageClose = () => {
-    setLanguageAnchorEl(null);
-  };
+    const handleLanguageClose = () => {
+        setLanguageAnchorEl(null);
+    };
 
-  const handleLanguageChange = (lang) => {
-    // changeLanguage(lang);
-    handleLanguageClose();
-  };
+    const handleLanguageChange = (lang) => {
+        // changeLanguage(lang);
+        handleLanguageClose();
+    };
 
-  const menuItems = [
-    { label: "Dashboard", path: "/dashboard" },
-    { label: "Trading", path: "/trading" },
-    { label: "Positions", path: "/positions" },
-    { label: "History", path: "/history" },
-    { label: "Risk Management", path: "/risk-management" },
-    { label: "Market News", path: "/market-news" },
-    { label: "Economic Calendar", path: "/economic-calendar" },
-  ];
+    const menuItems = [
+        { label: 'Dashboard', path: '/dashboard' },
+        { label: 'Trading', path: '/trading' },
+        { label: 'Positions', path: '/positions' },
+        { label: 'History', path: '/history' },
+        { label: 'Risk Management', path: '/risk-management' },
+        { label: 'Market News', path: '/market-news' },
+        { label: 'Economic Calendar', path: '/economic-calendar' }
+    ];
 
-  return (
-    <AppBar position="static">
-      <Toolbar>
-        {isMobile && (
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            onClick={handleMenu}
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          FX Trading Platform
-        </Typography>
-        {!isMobile && (
-          <Box sx={{ display: "flex" }}>
-            {menuItems.map((item) => (
-              <Button
-                key={item.path}
-                color="inherit"
-                component={RouterLink}
-                to={item.path}
-                sx={{ mx: 1 }}
-              >
-                {item.label}
-              </Button>
-            ))}
-          </Box>
-        )}
-        <IconButton sx={{ ml: 1 }} onClick={toggleTheme} color="inherit">
-          {theme.palette.mode === "dark" ? (
-            <Brightness7Icon />
-          ) : (
-            <Brightness4Icon />
-          )}
-        </IconButton>
-        <IconButton sx={{ ml: 1 }} onClick={handleLanguageMenu} color="inherit">
-          <LanguageIcon />
-        </IconButton>
-        <Button color="inherit" component={RouterLink} to="/account">
-          Account
-        </Button>
-        <Button color="inherit" component={RouterLink} to="/login">
-          Login
-        </Button>
-      </Toolbar>
-      <Menu
-        id="menu-appbar"
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        {menuItems.map((item) => (
-          <MenuItem
-            key={item.path}
-            component={RouterLink}
-            to={item.path}
-            onClick={handleClose}
-          >
-            {item.label}
-          </MenuItem>
-        ))}
-      </Menu>
-      <Menu
-        id="language-menu"
-        anchorEl={languageAnchorEl}
-        open={Boolean(languageAnchorEl)}
-        onClose={handleLanguageClose}
-      >
-        <MenuItem onClick={() => handleLanguageChange("en")}>English</MenuItem>
-        <MenuItem onClick={() => handleLanguageChange("es")}>Español</MenuItem>
-        <MenuItem onClick={() => handleLanguageChange("fr")}>Français</MenuItem>
-      </Menu>
-    </AppBar>
-  );
+    return (
+        <AppBar position="static">
+            <Toolbar>
+                {isMobile && (
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={handleMenu}
+                        sx={{ mr: 2 }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+                )}
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    FX Trading Platform
+                </Typography>
+                {!isMobile && (
+                    <Box sx={{ display: 'flex' }}>
+                        {menuItems.map((item) => (
+                            <Button
+                                key={item.path}
+                                color="inherit"
+                                component={RouterLink}
+                                to={item.path}
+                                sx={{ mx: 1 }}
+                            >
+                                {item.label}
+                            </Button>
+                        ))}
+                    </Box>
+                )}
+                <IconButton
+                    sx={{ ml: 1 }}
+                    onClick={toggleTheme}
+                    color="inherit"
+                >
+                    {theme.palette.mode === 'dark' ? (
+                        <Brightness7Icon />
+                    ) : (
+                        <Brightness4Icon />
+                    )}
+                </IconButton>
+                <IconButton
+                    sx={{ ml: 1 }}
+                    onClick={handleLanguageMenu}
+                    color="inherit"
+                >
+                    <LanguageIcon />
+                </IconButton>
+                <Button color="inherit" component={RouterLink} to="/account">
+                    Account
+                </Button>
+                <Button color="inherit" component={RouterLink} to="/login">
+                    Login
+                </Button>
+            </Toolbar>
+            <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                }}
+                keepMounted
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+            >
+                {menuItems.map((item) => (
+                    <MenuItem
+                        key={item.path}
+                        component={RouterLink}
+                        to={item.path}
+                        onClick={handleClose}
+                    >
+                        {item.label}
+                    </MenuItem>
+                ))}
+            </Menu>
+            <Menu
+                id="language-menu"
+                anchorEl={languageAnchorEl}
+                open={Boolean(languageAnchorEl)}
+                onClose={handleLanguageClose}
+            >
+                <MenuItem onClick={() => handleLanguageChange('en')}>
+                    English
+                </MenuItem>
+                <MenuItem onClick={() => handleLanguageChange('es')}>
+                    Español
+                </MenuItem>
+                <MenuItem onClick={() => handleLanguageChange('fr')}>
+                    Français
+                </MenuItem>
+            </Menu>
+        </AppBar>
+    );
 };
 
 export default Header;
