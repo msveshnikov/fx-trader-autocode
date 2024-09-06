@@ -1,11 +1,20 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Container, Grid, Paper, Typography, Box, Button } from '@mui/material';
+import {
+    Container,
+    Grid,
+    Paper,
+    Typography,
+    Box,
+    Button} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
+import { useSpring, animated } from 'react-spring';
 import apiService from '../services/apiService';
 import Loading from '../components/Loading';
+import { useLanguage } from '../contexts/LanguageContext';
+import Chart from 'react-apexcharts';
 
 const Dashboard = () => {
     const [currencyPairs, setCurrencyPairs] = useState([]);
@@ -13,6 +22,7 @@ const Dashboard = () => {
     const [dashboardData, setDashboardData] = useState(null);
     const navigate = useNavigate();
     const theme = useTheme();
+    const { language } = useLanguage();
 
     const {
         data: quotesData,
@@ -21,7 +31,9 @@ const Dashboard = () => {
     } = useQuery(
         'quotes',
         () => apiService.getQuotes(['EUR/USD', 'GBP/USD', 'USD/JPY']),
-        { refetchInterval: 10000 }
+        {
+            refetchInterval: 10000
+        }
     );
 
     const {
@@ -43,9 +55,10 @@ const Dashboard = () => {
     useEffect(() => {
         if (quotesData) {
             setCurrencyPairs(
-                Object.entries(quotesData).map(([symbol, price]) => ({
-                    symbol,
-                    price
+                Object.entries(quotesData).map(([pair, { bid, ask }]) => ({
+                    pair,
+                    bid,
+                    ask
                 }))
             );
         }
@@ -58,10 +71,33 @@ const Dashboard = () => {
     }, [quotesData, accountData, dashboardConfig]);
 
     const sortedCurrencyPairs = useMemo(() => {
-        return [...currencyPairs].sort((a, b) =>
-            a.symbol.localeCompare(b.symbol)
-        );
+        return [...currencyPairs].sort((a, b) => a.pair.localeCompare(b.pair));
     }, [currencyPairs]);
+
+    const balanceAnimation = useSpring({
+        number: accountBalance || 0,
+        from: { number: 0 }
+    });
+
+    const chartOptions = {
+        chart: {
+            type: 'line',
+            height: 300
+        },
+        xaxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
+        },
+        theme: {
+            mode: theme.palette.mode
+        }
+    };
+
+    const chartSeries = [
+        {
+            name: 'EUR/USD',
+            data: [1.12, 1.13, 1.15, 1.14, 1.16, 1.15]
+        }
+    ];
 
     if (quotesLoading || accountLoading || dashboardLoading) {
         return <Loading />;
@@ -87,36 +123,56 @@ const Dashboard = () => {
     return (
         <>
             <Helmet>
-                <title>Dashboard - FX Trading Platform</title>
+                <title>
+                    {language === 'en'
+                        ? 'Dashboard - FX Trading Platform'
+                        : 'Tableau de bord - Plateforme de trading FX'}
+                </title>
                 <meta
                     name="description"
-                    content="View your FX trading dashboard with real-time currency pair quotes and account information."
+                    content={
+                        language === 'en'
+                            ? 'View your FX trading dashboard with real-time currency pair quotes and account information.'
+                            : 'Consultez votre tableau de bord de trading FX avec des cotations de paires de devises en temps réel et des informations sur votre compte.'
+                    }
                 />
             </Helmet>
             <Container maxWidth="lg">
                 <Box my={4}>
                     <Typography variant="h4" component="h1" gutterBottom>
-                        Dashboard
+                        {language === 'en' ? 'Dashboard' : 'Tableau de bord'}
                     </Typography>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={6}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    Account Balance
+                                    {language === 'en'
+                                        ? 'Account Balance'
+                                        : 'Solde du compte'}
                                 </Typography>
                                 {accountBalance !== null ? (
-                                    <Typography variant="h4">
-                                        ${accountBalance?.toFixed(2)}
-                                    </Typography>
+                                    <animated.div>
+                                        {balanceAnimation.number.to((val) => (
+                                            <Typography variant="h4">
+                                                ${val.toFixed(2)}
+                                            </Typography>
+                                        ))}
+                                    </animated.div>
                                 ) : (
-                                    <Typography>Balance unavailable</Typography>
+                                    <Typography>
+                                        {language === 'en'
+                                            ? 'Balance unavailable'
+                                            : 'Solde indisponible'}
+                                    </Typography>
                                 )}
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    Quick Trade
+                                    {language === 'en'
+                                        ? 'Quick Trade'
+                                        : 'Trade rapide'}
                                 </Typography>
                                 <Button
                                     variant="contained"
@@ -124,48 +180,65 @@ const Dashboard = () => {
                                     onClick={() => navigate('/trading')}
                                     fullWidth
                                 >
-                                    Start Trading
+                                    {language === 'en'
+                                        ? 'Start Trading'
+                                        : 'Commencer à trader'}
                                 </Button>
                             </Paper>
                         </Grid>
                         <Grid item xs={12}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    Currency Pairs
+                                    {language === 'en'
+                                        ? 'Currency Pairs'
+                                        : 'Paires de devises'}
                                 </Typography>
                                 {sortedCurrencyPairs.length > 0 ? (
                                     <Grid container spacing={2}>
-                                        {sortedCurrencyPairs.map((pair) => (
-                                            <Grid
-                                                item
-                                                xs={12}
-                                                sm={6}
-                                                md={4}
-                                                key={pair.symbol}
-                                            >
-                                                <Paper
-                                                    elevation={1}
-                                                    sx={{
-                                                        p: 2,
-                                                        backgroundColor:
-                                                            theme.palette
-                                                                .background
-                                                                .default
-                                                    }}
+                                        {sortedCurrencyPairs.map(
+                                            ({ pair, bid, ask }) => (
+                                                <Grid
+                                                    item
+                                                    xs={12}
+                                                    sm={6}
+                                                    md={4}
+                                                    key={pair}
                                                 >
-                                                    <Typography variant="subtitle1">
-                                                        {pair.symbol}
-                                                    </Typography>
-                                                    <Typography variant="h6">
-                                                        {pair.price}
-                                                    </Typography>
-                                                </Paper>
-                                            </Grid>
-                                        ))}
+                                                    <Paper
+                                                        elevation={1}
+                                                        sx={{
+                                                            p: 2,
+                                                            backgroundColor:
+                                                                theme.palette
+                                                                    .background
+                                                                    .default
+                                                        }}
+                                                    >
+                                                        <Typography variant="subtitle1">
+                                                            {pair}
+                                                        </Typography>
+                                                        <Typography variant="body2">
+                                                            {language === 'en'
+                                                                ? 'Bid:'
+                                                                : 'Achat:'}{' '}
+                                                            {bid}
+                                                        </Typography>
+                                                        <Typography variant="body2">
+                                                            {language === 'en'
+                                                                ? 'Ask:'
+                                                                : 'Vente:'}{' '}
+                                                            {ask}
+                                                        </Typography>
+                                                    </Paper>
+                                                </Grid>
+                                            )
+                                        )}
                                     </Grid>
                                 ) : (
                                     <Typography>
-                                        No currency pairs available
+                                        {language === 'en'
+                                            ? 'No currency pairs available'
+                                            : 'Aucune paire de devises disponible'}
                                     </Typography>
                                 )}
                             </Paper>
@@ -175,7 +248,9 @@ const Dashboard = () => {
                                 <Grid item xs={12} md={6}>
                                     <Paper elevation={3} sx={{ p: 2 }}>
                                         <Typography variant="h6" gutterBottom>
-                                            Open Positions
+                                            {language === 'en'
+                                                ? 'Open Positions'
+                                                : 'Positions ouvertes'}
                                         </Typography>
                                         <Button
                                             variant="outlined"
@@ -185,7 +260,9 @@ const Dashboard = () => {
                                             }
                                             fullWidth
                                         >
-                                            View Positions
+                                            {language === 'en'
+                                                ? 'View Positions'
+                                                : 'Voir les positions'}
                                         </Button>
                                     </Paper>
                                 </Grid>
@@ -195,7 +272,9 @@ const Dashboard = () => {
                                 <Grid item xs={12} md={6}>
                                     <Paper elevation={3} sx={{ p: 2 }}>
                                         <Typography variant="h6" gutterBottom>
-                                            Recent Orders
+                                            {language === 'en'
+                                                ? 'Recent Orders'
+                                                : 'Ordres récents'}
                                         </Typography>
                                         <Button
                                             variant="outlined"
@@ -203,7 +282,9 @@ const Dashboard = () => {
                                             onClick={() => navigate('/history')}
                                             fullWidth
                                         >
-                                            View Order History
+                                            {language === 'en'
+                                                ? 'View Order History'
+                                                : "Voir l'historique des ordres"}
                                         </Button>
                                     </Paper>
                                 </Grid>
@@ -213,17 +294,17 @@ const Dashboard = () => {
                                 <Grid item xs={12}>
                                     <Paper elevation={3} sx={{ p: 2 }}>
                                         <Typography variant="h6" gutterBottom>
-                                            Market Chart
+                                            {language === 'en'
+                                                ? 'Market Chart'
+                                                : 'Graphique de marché'}
                                         </Typography>
-                                        <Box
-                                            height={300}
-                                            display="flex"
-                                            justifyContent="center"
-                                            alignItems="center"
-                                        >
-                                            <Typography variant="body1">
-                                                Chart placeholder
-                                            </Typography>
+                                        <Box height={300}>
+                                            <Chart
+                                                options={chartOptions}
+                                                series={chartSeries}
+                                                type="line"
+                                                height={300}
+                                            />
                                         </Box>
                                     </Paper>
                                 </Grid>

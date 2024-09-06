@@ -13,6 +13,7 @@
         "dayjs": "^1.11.13",
         "i18next": "^23.14.0",
         "react": "^18.3.1",
+        "react-apexcharts": "^1.4.1",
         "react-dom": "^18.3.1",
         "react-helmet": "^6.1.0",
         "react-i18next": "^15.0.1",
