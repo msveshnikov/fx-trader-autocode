@@ -77,3 +77,24 @@ fx-trading-platform/
 -   Implement data visualization libraries (e.g., D3.js or Chart.js) for
     advanced charting
 -   Implement a feature flag system for gradual rollout of new features
+
+# TODO
+
+-   fix Chart not visible
+-   fix currency pair names instead of 0,1,2 Currency Pairs
+0
+Bid: 1.4887242912944136
+
+Ask: 1.2628042893555937
+
+1
+Bid: 1.7945707989154935
+
+Ask: 1.4754395566185192
+
+2
+Bid: 1.5866596896102896
+
+Ask: 1.4941156727182907
+
+-   fix Account Balance [object Object]

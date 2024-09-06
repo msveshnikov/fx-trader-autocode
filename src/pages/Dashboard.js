@@ -5,7 +5,9 @@ import {
     Paper,
     Typography,
     Box,
-    Button} from '@mui/material';
+    Button,
+    useMediaQuery
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';
@@ -23,6 +25,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
     const theme = useTheme();
     const { language } = useLanguage();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const {
         data: quotesData,
@@ -40,27 +43,17 @@ const Dashboard = () => {
         data: accountData,
         isLoading: accountLoading,
         error: accountError
-    } = useQuery('account', () =>
-        apiService.getUserAccount(localStorage.getItem('token'))
-    );
+    } = useQuery('account', () => apiService.getUserAccount());
 
     const {
         data: dashboardConfig,
         isLoading: dashboardLoading,
         error: dashboardError
-    } = useQuery('dashboard', () =>
-        apiService.getDashboardData(localStorage.getItem('token'))
-    );
+    } = useQuery('dashboard', apiService.getDashboardData);
 
     useEffect(() => {
         if (quotesData) {
-            setCurrencyPairs(
-                Object.entries(quotesData).map(([pair, { bid, ask }]) => ({
-                    pair,
-                    bid,
-                    ask
-                }))
-            );
+            setCurrencyPairs(quotesData);
         }
         if (accountData) {
             setAccountBalance(accountData.balance);
@@ -82,14 +75,30 @@ const Dashboard = () => {
     const chartOptions = {
         chart: {
             type: 'line',
-            height: 300
+            height: 300,
+            toolbar: {
+                show: !isMobile
+            }
         },
         xaxis: {
             categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
         },
         theme: {
             mode: theme.palette.mode
-        }
+        },
+        responsive: [
+            {
+                breakpoint: 480,
+                options: {
+                    chart: {
+                        width: '100%'
+                    },
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        ]
     };
 
     const chartSeries = [
@@ -221,13 +230,13 @@ const Dashboard = () => {
                                                             {language === 'en'
                                                                 ? 'Bid:'
                                                                 : 'Achat:'}{' '}
-                                                            {bid}
+                                                            {bid.toFixed(5)}
                                                         </Typography>
                                                         <Typography variant="body2">
                                                             {language === 'en'
                                                                 ? 'Ask:'
                                                                 : 'Vente:'}{' '}
-                                                            {ask}
+                                                            {ask.toFixed(5)}
                                                         </Typography>
                                                     </Paper>
                                                 </Grid>
@@ -243,72 +252,64 @@ const Dashboard = () => {
                                 )}
                             </Paper>
                         </Grid>
-                        {dashboardData &&
-                            dashboardData.widgets?.includes('positions') && (
-                                <Grid item xs={12} md={6}>
-                                    <Paper elevation={3} sx={{ p: 2 }}>
-                                        <Typography variant="h6" gutterBottom>
-                                            {language === 'en'
-                                                ? 'Open Positions'
-                                                : 'Positions ouvertes'}
-                                        </Typography>
-                                        <Button
-                                            variant="outlined"
-                                            color="primary"
-                                            onClick={() =>
-                                                navigate('/positions')
-                                            }
-                                            fullWidth
-                                        >
-                                            {language === 'en'
-                                                ? 'View Positions'
-                                                : 'Voir les positions'}
-                                        </Button>
-                                    </Paper>
-                                </Grid>
-                            )}
-                        {dashboardData &&
-                            dashboardData.widgets?.includes('orders') && (
-                                <Grid item xs={12} md={6}>
-                                    <Paper elevation={3} sx={{ p: 2 }}>
-                                        <Typography variant="h6" gutterBottom>
-                                            {language === 'en'
-                                                ? 'Recent Orders'
-                                                : 'Ordres récents'}
-                                        </Typography>
-                                        <Button
-                                            variant="outlined"
-                                            color="primary"
-                                            onClick={() => navigate('/history')}
-                                            fullWidth
-                                        >
-                                            {language === 'en'
-                                                ? 'View Order History'
-                                                : "Voir l'historique des ordres"}
-                                        </Button>
-                                    </Paper>
-                                </Grid>
-                            )}
-                        {dashboardData &&
-                            dashboardData.widgets?.includes('chart') && (
-                                <Grid item xs={12}>
-                                    <Paper elevation={3} sx={{ p: 2 }}>
-                                        <Typography variant="h6" gutterBottom>
-                                            {language === 'en'
-                                                ? 'Market Chart'
-                                                : 'Graphique de marché'}
-                                        </Typography>
-                                        <Box height={300}>
-                                            <Chart
-                                                options={chartOptions}
-                                                series={chartSeries}
-                                                type="line"
-                                                height={300}
-                                            />
-                                        </Box>
-                                    </Paper>
-                                </Grid>
-                            )}
+                        {dashboardData && dashboardData.openPositions > 0 && (
+                            <Grid item xs={12} md={6}>
+                                <Paper elevation={3} sx={{ p: 2 }}>
+                                    <Typography variant="h6" gutterBottom>
+                                        {language === 'en'
+                                            ? 'Open Positions'
+                                            : 'Positions ouvertes'}
+                                    </Typography>
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => navigate('/positions')}
+                                        fullWidth
+                                    >
+                                        {language === 'en'
+                                            ? 'View Positions'
+                                            : 'Voir les positions'}
+                                    </Button>
+                                </Paper>
+                            </Grid>
+                        )}
+                        <Grid item xs={12} md={6}>
+                            <Paper elevation={3} sx={{ p: 2 }}>
+                                <Typography variant="h6" gutterBottom>
+                                    {language === 'en'
+                                        ? 'Recent Orders'
+                                        : 'Ordres récents'}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={() => navigate('/history')}
+                                    fullWidth
+                                >
+                                    {language === 'en'
+                                        ? 'View Order History'
+                                        : "Voir l'historique des ordres"}
+                                </Button>
+                            </Paper>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Paper elevation={3} sx={{ p: 2 }}>
+                                <Typography variant="h6" gutterBottom>
+                                    {language === 'en'
+                                        ? 'Market Chart'
+                                        : 'Graphique de marché'}
+                                </Typography>
+                                <Box height={300}>
+                                    <Chart
+                                        options={chartOptions}
+                                        series={chartSeries}
+                                        type="line"
+                                        height={300}
+                                        width="100%"
+                                    />
+                                </Box>
+                            </Paper>
+                        </Grid>
                     </Grid>
                 </Box>
             </Container>

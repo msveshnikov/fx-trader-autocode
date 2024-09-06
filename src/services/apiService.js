@@ -57,7 +57,8 @@ const apiService = {
         };
     },
 
-    getTradeHistory: (token, startDate, endDate) => {
+    getTradeHistory: async (token, startDate, endDate) => {
+        await mockDelay(300);
         return [
             {
                 id: 1,
@@ -101,13 +102,7 @@ const apiService = {
 
     fetchCurrencyPairs: async () => {
         await mockDelay(200);
-        return [
-            'EUR/USD',
-            'GBP/USD',
-            'USD/JPY',
-            'AUD/USD',
-            'USD/CAD'
-        ];
+        return ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD'];
     },
 
     fetchAccountBalance: async () => {
@@ -169,7 +164,8 @@ const apiService = {
             accountBalance: 50000,
             openPositions: 2,
             dailyPnL: 350,
-            notifications: 1
+            notifications: 1,
+            widgets: ['positions', 'orders', 'chart']
         };
     },
 
