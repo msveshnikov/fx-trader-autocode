@@ -64,9 +64,8 @@ const apiService = {
         });
     },
 
-    getTradeHistory: async (token, startDate, endDate) => {
-        await mockDelay(500);
-        return mockResponse([
+    getTradeHistory: (token, startDate, endDate) => {
+        return [
             {
                 id: 1,
                 pair: 'EUR/USD',
@@ -89,7 +88,7 @@ const apiService = {
                 type: 'Sell',
                 status: 'Closed'
             }
-        ]);
+        ];
     },
 
     getUserAccount: async () => {
