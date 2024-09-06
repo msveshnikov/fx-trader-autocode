@@ -83,8 +83,3 @@ fx-trading-platform/
 -   Implement data visualization libraries (e.g., D3.js or Chart.js) for
     advanced charting
 -   Implement a feature flag system for gradual rollout of new features
-
-# TODO
-
--   fix Account Balance in Dashboard [object Object]
--   add nice Candle diagram for realtime FX rates (mocked, update 1m) in FX Realtime page

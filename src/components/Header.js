@@ -148,9 +148,7 @@ const Header = ({ toggleTheme }) => {
                 <MenuItem onClick={() => handleLanguageChange('en')}>
                     English
                 </MenuItem>
-                <MenuItem onClick={() => handleLanguageChange('es')}>
-                    Español
-                </MenuItem>
+
                 <MenuItem onClick={() => handleLanguageChange('fr')}>
                     Français
                 </MenuItem>

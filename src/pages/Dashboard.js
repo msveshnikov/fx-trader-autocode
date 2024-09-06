@@ -69,7 +69,8 @@ const Dashboard = () => {
 
     const balanceAnimation = useSpring({
         number: accountBalance || 0,
-        from: { number: 0 }
+        from: { number: 0 },
+        config: { duration: 1000 }
     });
 
     const chartOptions = {
@@ -160,13 +161,9 @@ const Dashboard = () => {
                                         : 'Solde du compte'}
                                 </Typography>
                                 {accountBalance !== null ? (
-                                    <animated.div>
-                                        {balanceAnimation.number.to((val) => (
-                                            <Typography variant="h4">
-                                                ${val.toFixed(2)}
-                                            </Typography>
-                                        ))}
-                                    </animated.div>
+                                    <Typography variant="h4">
+                                        {accountBalance}
+                                    </Typography>
                                 ) : (
                                     <Typography>
                                         {language === 'en'
