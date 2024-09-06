@@ -6,7 +6,6 @@ import {
     Typography,
     Box,
     Button,
-    CircularProgress,
     useMediaQuery
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +21,6 @@ const Dashboard = () => {
     const [dashboardData, setDashboardData] = useState(null);
     const navigate = useNavigate();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const {
         data: quotesData,

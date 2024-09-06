@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import {
     AppBar,
     Toolbar,
@@ -17,14 +17,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import LanguageIcon from '@mui/icons-material/Language';
-import { LanguageContext } from '../contexts/LanguageContext';
 
 const Header = ({ toggleTheme }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    // const { language, changeLanguage } = useContext(LanguageContext);
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -43,7 +41,6 @@ const Header = ({ toggleTheme }) => {
     };
 
     const handleLanguageChange = (lang) => {
-        // changeLanguage(lang);
         handleLanguageClose();
     };
 
@@ -159,6 +156,10 @@ const Header = ({ toggleTheme }) => {
             </Menu>
         </AppBar>
     );
+};
+
+Header.propTypes = {
+    toggleTheme: PropTypes.func.isRequired
 };
 
 export default Header;

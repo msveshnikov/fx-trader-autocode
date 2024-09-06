@@ -57,7 +57,7 @@ const Register = () => {
         e.preventDefault();
         if (validateForm()) {
             try {
-                const response = await apiService.register(formData);
+                await apiService.register(formData);
                 setAlertMessage('Registration successful. Please log in.');
                 setTimeout(() => {
                     navigate('/login');
