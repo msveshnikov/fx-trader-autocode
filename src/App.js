@@ -13,6 +13,8 @@ import Footer from './components/Footer';
 import Loading from './components/Loading';
 import createCustomTheme from './utils/theme';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Trading = lazy(() => import('./pages/Trading'));
@@ -60,75 +62,86 @@ function App() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <ThemeProvider theme={theme}>
-                <LanguageProvider value={{ language, changeLanguage }}>
-                    <CssBaseline />
-                    <Router>
-                        <div className="App">
-                            <Helmet>
-                                <title>FX Trading Platform</title>
-                                <meta
-                                    name="description"
-                                    content="Modern FX Trading Platform"
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <ThemeProvider theme={theme}>
+                    <LanguageProvider value={{ language, changeLanguage }}>
+                        <CssBaseline />
+                        <Router>
+                            <div className="App">
+                                <Helmet>
+                                    <title>FX Trading Platform</title>
+                                    <meta
+                                        name="description"
+                                        content="Modern FX Trading Platform"
+                                    />
+                                    <link
+                                        rel="manifest"
+                                        href="/manifest.json"
+                                    />
+                                </Helmet>
+                                <Header
+                                    toggleTheme={toggleDarkMode}
+                                    changeLanguage={changeLanguage}
                                 />
-                                <link rel="manifest" href="/manifest.json" />
-                            </Helmet>
-                            <Header
-                                toggleTheme={toggleDarkMode}
-                                changeLanguage={changeLanguage}
-                            />
-                            <Suspense fallback={<Loading />}>
-                                <Routes>
-                                    <Route
-                                        path="/"
-                                        element={
-                                            <Navigate to="/dashboard" replace />
-                                        }
-                                    />
-                                    <Route path="/login" element={<Login />} />
-                                    <Route
-                                        path="/register"
-                                        element={<Register />}
-                                    />
-                                    <Route
-                                        path="/dashboard"
-                                        element={<Dashboard />}
-                                    />
-                                    <Route
-                                        path="/trading"
-                                        element={<Trading />}
-                                    />
-                                    <Route
-                                        path="/positions"
-                                        element={<Positions />}
-                                    />
-                                    <Route
-                                        path="/history"
-                                        element={<History />}
-                                    />
-                                    <Route
-                                        path="/account"
-                                        element={<Account />}
-                                    />
-                                    <Route
-                                        path="/risk-management"
-                                        element={<RiskManagement />}
-                                    />
-                                    <Route
-                                        path="/market-news"
-                                        element={<MarketNews />}
-                                    />
-                                    <Route
-                                        path="/economic-calendar"
-                                        element={<EconomicCalendar />}
-                                    />
-                                </Routes>
-                            </Suspense>
-                            <Footer />
-                        </div>
-                    </Router>
-                </LanguageProvider>
-            </ThemeProvider>
+                                <Suspense fallback={<Loading />}>
+                                    <Routes>
+                                        <Route
+                                            path="/"
+                                            element={
+                                                <Navigate
+                                                    to="/dashboard"
+                                                    replace
+                                                />
+                                            }
+                                        />
+                                        <Route
+                                            path="/login"
+                                            element={<Login />}
+                                        />
+                                        <Route
+                                            path="/register"
+                                            element={<Register />}
+                                        />
+                                        <Route
+                                            path="/dashboard"
+                                            element={<Dashboard />}
+                                        />
+                                        <Route
+                                            path="/trading"
+                                            element={<Trading />}
+                                        />
+                                        <Route
+                                            path="/positions"
+                                            element={<Positions />}
+                                        />
+                                        <Route
+                                            path="/history"
+                                            element={<History />}
+                                        />
+                                        <Route
+                                            path="/account"
+                                            element={<Account />}
+                                        />
+                                        <Route
+                                            path="/risk-management"
+                                            element={<RiskManagement />}
+                                        />
+                                        <Route
+                                            path="/market-news"
+                                            element={<MarketNews />}
+                                        />
+                                        <Route
+                                            path="/economic-calendar"
+                                            element={<EconomicCalendar />}
+                                        />
+                                    </Routes>
+                                </Suspense>
+                                <Footer />
+                            </div>
+                        </Router>
+                    </LanguageProvider>
+                </ThemeProvider>
+            </LocalizationProvider>
         </QueryClientProvider>
     );
 }
