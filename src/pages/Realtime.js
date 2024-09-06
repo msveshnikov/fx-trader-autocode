@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
     Container,
     Grid,
@@ -30,7 +30,7 @@ const Realtime = () => {
         'quotes',
         () => apiService.getQuotes(['EUR/USD', 'GBP/USD', 'USD/JPY']),
         {
-            refetchInterval: 10000
+            refetchInterval: 5000
         }
     );
 
@@ -52,12 +52,55 @@ const Realtime = () => {
         return [...currencyPairs].sort((a, b) => a.pair.localeCompare(b.pair));
     }, [currencyPairs]);
 
+    const generateNewCandle = useCallback(() => {
+        if (!chartData || chartData.length === 0) return null;
+        const lastCandle = chartData[chartData.length - 1];
+        const newTimestamp = new Date(lastCandle.timestamp).getTime() + 5000;
+        const randomChange = (Math.random() - 0.5) * 0.001;
+        const newClose = lastCandle.close + randomChange;
+        return {
+            timestamp: newTimestamp,
+            open: lastCandle.close,
+            high: Math.max(lastCandle.close, newClose),
+            low: Math.min(lastCandle.close, newClose),
+            close: newClose
+        };
+    }, [chartData]);
+
+    const [updatedChartData, setUpdatedChartData] = useState([]);
+
+    useEffect(() => {
+        if (chartData) {
+            setUpdatedChartData(chartData);
+        }
+    }, [chartData]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setUpdatedChartData((prevData) => {
+                if (!prevData || prevData.length === 0) return prevData;
+                const newCandle = generateNewCandle();
+                if (!newCandle) return prevData;
+                return [...prevData.slice(1), newCandle];
+            });
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [generateNewCandle]);
+
     const chartOptions = {
         chart: {
             type: 'candlestick',
             height: 350,
             toolbar: {
                 show: !isMobile
+            },
+            animations: {
+                enabled: true,
+                easing: 'linear',
+                dynamicAnimation: {
+                    speed: 1000
+                }
             }
         },
         title: {
@@ -78,16 +121,16 @@ const Realtime = () => {
     };
 
     const chartSeries = useMemo(() => {
-        if (!chartData) return [];
+        if (!updatedChartData) return [];
         return [
             {
-                data: chartData.map((item) => ({
+                data: updatedChartData.map((item) => ({
                     x: new Date(item.timestamp),
                     y: [item.open, item.high, item.low, item.close]
                 }))
             }
         ];
-    }, [chartData]);
+    }, [updatedChartData]);
 
     const handlePairChange = (pair) => {
         setSelectedPair(pair);
@@ -167,10 +210,12 @@ const Realtime = () => {
                                                             {pair}
                                                         </Typography>
                                                         <Typography variant="body2">
-                                                            Bid: {bid.toFixed(5)}
+                                                            Bid:{' '}
+                                                            {bid.toFixed(5)}
                                                         </Typography>
                                                         <Typography variant="body2">
-                                                            Ask: {ask.toFixed(5)}
+                                                            Ask:{' '}
+                                                            {ask.toFixed(5)}
                                                         </Typography>
                                                     </Paper>
                                                 </Grid>

@@ -83,33 +83,6 @@ fx-trading-platform/
     advanced charting
 -   Implement a feature flag system for gradual rollout of new features
 
-## New Design Ideas and Considerations
-
--   Implement a micro-frontend architecture for better scalability and team
-    collaboration
--   Integrate WebAssembly for high-performance calculations and data processing
--   Implement a chatbot using natural language processing for user support
--   Add voice commands for hands-free trading operations
--   Implement augmented reality features for visualizing market trends
--   Integrate machine learning algorithms for personalized trading
-    recommendations
--   Implement social trading features for community engagement
--   Add push notifications for important market events and trade updates
--   Create a mobile app version using React Native for cross-platform
-    compatibility
--   Implement a sandbox environment for paper trading and strategy testing
--   Add support for cryptocurrency trading alongside forex
--   Implement automated trading strategies using algorithms
--   Create a marketplace for custom indicators and trading strategies
--   Implement a backtesting tool for historical performance analysis
--   Add integration with popular trading platforms (e.g., MetaTrader) for
-    account syncing
--   Implement a news sentiment analysis feature for market insights
--   Create a portfolio optimization tool using modern portfolio theory
--   Implement a risk scoring system for trades and overall account health
--   Add support for social media integration for sharing trade ideas and
-    performance
-
 ## Performance Optimization
 
 -   Implement server-side rendering (SSR) for improved initial load times
@@ -127,7 +100,3 @@ fx-trading-platform/
 -   Add user behavior analytics for UX improvements
 -   Implement performance monitoring and real-time alerting
 -   Create a dashboard for key performance indicators (KPIs)
-
-# TODO
-
--   remove any French strings logic
