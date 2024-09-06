@@ -64,7 +64,7 @@ const Positions = () => {
 
     return (
         <Container maxWidth="lg">
-            <Typography variant="h4" component="h1" gutterBottom>
+            <Typography sx={{ my: 4 }} variant="h4" component="h1" gutterBottom>
                 Positions
             </Typography>
             <TableContainer component={Paper}>

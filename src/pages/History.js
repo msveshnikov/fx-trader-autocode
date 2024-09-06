@@ -80,7 +80,7 @@ const History = () => {
                 <title>Trade History - FX Trading Platform</title>
             </Helmet>
             <Container maxWidth="lg">
-                <Typography variant="h4" component="h1" gutterBottom>
+                <Typography  sx={{ my: 4 }} variant="h4" component="h1" gutterBottom>
                     Trade History
                 </Typography>
                 <Box mb={3}>

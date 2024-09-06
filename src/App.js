@@ -26,6 +26,7 @@ const Register = lazy(() => import('./pages/Register'));
 const RiskManagement = lazy(() => import('./pages/RiskManagement'));
 const MarketNews = lazy(() => import('./pages/MarketNews'));
 const EconomicCalendar = lazy(() => import('./pages/EconomicCalendar'));
+const Realtime = lazy(() => import('./pages/Realtime'));
 
 const queryClient = new QueryClient();
 
@@ -133,6 +134,10 @@ function App() {
                                         <Route
                                             path="/economic-calendar"
                                             element={<EconomicCalendar />}
+                                        />
+                                        <Route
+                                            path="/realtime"
+                                            element={<Realtime />}
                                         />
                                     </Routes>
                                 </Suspense>

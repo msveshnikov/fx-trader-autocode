@@ -222,7 +222,6 @@ const apiService = {
                 id: 5,
                 title: 'Oil prices surge amid geopolitical tensions',
                 date: '2023-05-05',
-                // imageUrl: 'https://images.unsplash.com/photo-1582486225644-6a7b9c55dcfc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
                 summary:
                     'Oil prices have surged in response to escalating geopolitical tensions...',
                 publishedAt: '2023-05-05T09:15:00Z'
@@ -317,6 +316,46 @@ const apiService = {
                 previous: '0.4%'
             }
         ];
+    },
+
+    getRealTimeFXRates: async () => {
+        await mockDelay(300);
+        const currencyPairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD'];
+        return currencyPairs.map(pair => ({
+            pair,
+            bid: (Math.random() * 0.5 + 1).toFixed(5),
+            ask: (Math.random() * 0.5 + 1.01).toFixed(5),
+            timestamp: new Date().toISOString()
+        }));
+    },
+
+    getCandleData: async (currencyPair, interval = '1m', limit = 100) => {
+        await mockDelay(500);
+        const now = Date.now();
+        const intervalMs = {
+            '1m': 60000,
+            '5m': 300000,
+            '15m': 900000,
+            '1h': 3600000,
+            '4h': 14400000,
+            '1d': 86400000
+        }[interval];
+
+        return Array.from({ length: limit }, (_, i) => {
+            const timestamp = now - (limit - 1 - i) * intervalMs;
+            const open = Math.random() * 0.5 + 1;
+            const close = Math.random() * 0.5 + 1;
+            const high = Math.max(open, close) + Math.random() * 0.1;
+            const low = Math.min(open, close) - Math.random() * 0.1;
+            return {
+                timestamp,
+                open: open.toFixed(5),
+                high: high.toFixed(5),
+                low: low.toFixed(5),
+                close: close.toFixed(5),
+                volume: Math.floor(Math.random() * 1000000)
+            };
+        });
     }
 };
 

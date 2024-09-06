@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
     AppBar,
@@ -51,7 +51,8 @@ const Header = ({ toggleTheme }) => {
         { label: 'History', path: '/history' },
         { label: 'Risk Management', path: '/risk-management' },
         { label: 'Market News', path: '/market-news' },
-        { label: 'Economic Calendar', path: '/economic-calendar' }
+        { label: 'Economic Calendar', path: '/economic-calendar' },
+        { label: 'Realtime', path: '/realtime' }
     ];
 
     return (

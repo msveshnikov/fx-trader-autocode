@@ -74,7 +74,7 @@ const Account = () => {
     }
 
     return (
-        <Box sx={{ flexGrow: 1, padding: 3 }}>
+        <Box sx={{ my:4, flexGrow: 1, padding: 3 }}>
             <Typography variant="h4" gutterBottom>
                 Account Details
             </Typography>

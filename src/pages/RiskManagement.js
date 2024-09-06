@@ -80,7 +80,7 @@ const RiskManagement = () => {
     }
 
     return (
-        <Container maxWidth="lg">
+        <Container  sx={{ my: 4 }} maxWidth="lg">
             <Typography variant="h4" gutterBottom>
                 Risk Management
             </Typography>

@@ -86,4 +86,5 @@ fx-trading-platform/
 
 # TODO
 
--   fix Account Balance [object Object]
+-   fix Account Balance in Dashboard [object Object]
+-   add nice Candle diagram for realtime FX rates (mocked, update 1m) in FX Realtime page

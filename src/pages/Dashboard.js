@@ -20,7 +20,7 @@ import Chart from 'react-apexcharts';
 
 const Dashboard = () => {
     const [currencyPairs, setCurrencyPairs] = useState([]);
-    const [accountBalance, setAccountBalance] = useState(null);
+    const [accountBalance, setAccountBalance] = useState(50000);
     const [dashboardData, setDashboardData] = useState(null);
     const navigate = useNavigate();
     const theme = useTheme();
@@ -43,7 +43,7 @@ const Dashboard = () => {
         data: accountData,
         isLoading: accountLoading,
         error: accountError
-    } = useQuery('account', () => apiService.getUserAccount());
+    } = useQuery('account', apiService.getUserAccount);
 
     const {
         data: dashboardConfig,
