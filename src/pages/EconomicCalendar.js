@@ -68,7 +68,7 @@ const EconomicCalendar = () => {
                             label="Start Date"
                             value={startDate}
                             onChange={(newValue) => setStartDate(newValue)}
-                            renderInput={(params) => (
+                            textField={(params) => (
                                 <TextField {...params} fullWidth />
                             )}
                         />
@@ -78,7 +78,7 @@ const EconomicCalendar = () => {
                             label="End Date"
                             value={endDate}
                             onChange={(newValue) => setEndDate(newValue)}
-                            renderInput={(params) => (
+                            textField={(params) => (
                                 <TextField {...params} fullWidth />
                             )}
                         />

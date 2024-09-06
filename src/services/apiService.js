@@ -2,44 +2,37 @@
 
 const mockDelay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const mockResponse = (data) => ({
-    ok: true,
-    json: async () => data
-});
-
 const apiService = {
     login: async (credentials) => {
         await mockDelay(500);
-        return mockResponse({
+        return {
             token: 'mock_token',
             user: { id: 1, username: credentials.username }
-        });
+        };
     },
 
     register: async (userData) => {
         await mockDelay(500);
-        return mockResponse({ message: 'User registered successfully' });
+        return { message: 'User registered successfully' };
     },
 
     getQuotes: async (currencyPairs) => {
         await mockDelay(300);
-        return mockResponse(
-            currencyPairs.map((pair) => ({
-                pair,
-                bid: Math.random() + 1,
-                ask: Math.random() + 1.01
-            }))
-        );
+        return currencyPairs.map((pair) => ({
+            pair,
+            bid: Math.random() + 1,
+            ask: Math.random() + 1.01
+        }));
     },
 
     placeOrder: async (orderData) => {
         await mockDelay(400);
-        return mockResponse({ orderId: Math.floor(Math.random() * 1000000) });
+        return { orderId: Math.floor(Math.random() * 1000000) };
     },
 
     getPositions: async () => {
         await mockDelay(300);
-        return mockResponse([
+        return [
             {
                 id: 1,
                 pair: 'EUR/USD',
@@ -54,14 +47,14 @@ const apiService = {
                 openPrice: 150.67,
                 currentPrice: 150.89
             }
-        ]);
+        ];
     },
 
     closePosition: async (positionId) => {
         await mockDelay(400);
-        return mockResponse({
+        return {
             message: `Position ${positionId} closed successfully`
-        });
+        };
     },
 
     getTradeHistory: (token, startDate, endDate) => {
@@ -93,100 +86,98 @@ const apiService = {
 
     getUserAccount: async () => {
         await mockDelay(300);
-        return mockResponse({
+        return {
             id: 1,
             username: 'johndoe',
             email: 'john@example.com',
             balance: 50000
-        });
+        };
     },
 
     updateUserAccount: async (accountData) => {
         await mockDelay(400);
-        return mockResponse({ message: 'Account updated successfully' });
+        return { message: 'Account updated successfully' };
     },
 
     fetchCurrencyPairs: async () => {
         await mockDelay(200);
-        return mockResponse([
+        return [
             'EUR/USD',
             'GBP/USD',
             'USD/JPY',
             'AUD/USD',
             'USD/CAD'
-        ]);
+        ];
     },
 
     fetchAccountBalance: async () => {
         await mockDelay(300);
-        return mockResponse({ balance: 50000 });
+        return { balance: 50000 };
     },
 
     getChartData: async (currencyPair, timeframe) => {
         await mockDelay(500);
-        return mockResponse(
-            Array.from({ length: 100 }, (_, i) => ({
-                timestamp: Date.now() - i * 60000,
-                open: Math.random() + 1,
-                high: Math.random() + 1.1,
-                low: Math.random() + 0.9,
-                close: Math.random() + 1
-            }))
-        );
+        return Array.from({ length: 100 }, (_, i) => ({
+            timestamp: Date.now() - i * 60000,
+            open: Math.random() + 1,
+            high: Math.random() + 1.1,
+            low: Math.random() + 0.9,
+            close: Math.random() + 1
+        }));
     },
 
     getRiskMetrics: async (token) => {
         await mockDelay(400);
-        return mockResponse({
+        return {
             totalExposure: 100000,
             maxDrawdown: 5.2,
             sharpeRatio: 1.8
-        });
+        };
     },
 
     getRiskLimits: async (token) => {
         await mockDelay(300);
-        return mockResponse({
+        return {
             maxExposure: 150000,
             stopLossPercentage: 2
-        });
+        };
     },
 
     updateRiskLimits: async (riskLimits, token) => {
         await mockDelay(300);
-        return mockResponse({ message: 'Risk limits updated successfully' });
+        return { message: 'Risk limits updated successfully' };
     },
 
     getNotifications: async () => {
         await mockDelay(300);
-        return mockResponse([
+        return [
             { id: 1, message: 'New market update available', read: false },
             { id: 2, message: 'Your order has been executed', read: true }
-        ]);
+        ];
     },
 
     markNotificationAsRead: async (notificationId) => {
         await mockDelay(200);
-        return mockResponse({
+        return {
             message: `Notification ${notificationId} marked as read`
-        });
+        };
     },
 
     getDashboardData: async () => {
         await mockDelay(500);
-        return mockResponse({
+        return {
             accountBalance: 50000,
             openPositions: 2,
             dailyPnL: 350,
             notifications: 1
-        });
+        };
     },
 
     updateDashboardLayout: async (layout) => {
         await mockDelay(300);
-        return mockResponse({
+        return {
             message: 'Dashboard layout updated successfully'
-        });
+        };
     },
 
     getMarketNews: async (page = 1) => {
@@ -268,12 +259,12 @@ const apiService = {
                 publishedAt: '2023-05-08T13:45:00Z'
             }
         ];
-        return mockResponse(allNews.slice(startIndex, endIndex));
+        return allNews.slice(startIndex, endIndex);
     },
 
     getEconomicCalendar: async (startDate, endDate) => {
         await mockDelay(400);
-        return mockResponse([
+        return [
             {
                 id: 1,
                 event: 'US Non-Farm Payrolls',
@@ -329,7 +320,7 @@ const apiService = {
                 forecast: '0.5%',
                 previous: '0.4%'
             }
-        ]);
+        ];
     }
 };
 
