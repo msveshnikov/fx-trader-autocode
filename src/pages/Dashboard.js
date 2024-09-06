@@ -6,7 +6,9 @@ import {
     Typography,
     Box,
     Button,
-    useMediaQuery
+    useMediaQuery,
+    Snackbar,
+    Alert
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
@@ -19,8 +21,13 @@ import Chart from 'react-apexcharts';
 
 const Dashboard = () => {
     const [currencyPairs, setCurrencyPairs] = useState([]);
-    const [accountBalance, setAccountBalance] = useState(50000);
+    const [accountBalance, setAccountBalance] = useState(null);
     const [dashboardData, setDashboardData] = useState(null);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'info'
+    });
     const navigate = useNavigate();
     const theme = useTheme();
     const { language } = useLanguage();
@@ -51,15 +58,9 @@ const Dashboard = () => {
     } = useQuery('dashboard', apiService.getDashboardData);
 
     useEffect(() => {
-        if (quotesData) {
-            setCurrencyPairs(quotesData);
-        }
-        if (accountData) {
-            setAccountBalance(accountData.balance);
-        }
-        if (dashboardConfig) {
-            setDashboardData(dashboardConfig);
-        }
+        if (quotesData) setCurrencyPairs(quotesData);
+        if (accountData) setAccountBalance(accountData.balance);
+        if (dashboardConfig) setDashboardData(dashboardConfig);
     }, [quotesData, accountData, dashboardConfig]);
 
     const sortedCurrencyPairs = useMemo(() => {
@@ -70,26 +71,16 @@ const Dashboard = () => {
         chart: {
             type: 'line',
             height: 300,
-            toolbar: {
-                show: !isMobile
-            }
+            toolbar: { show: !isMobile }
         },
-        xaxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
-        },
-        theme: {
-            mode: theme.palette.mode
-        },
+        xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
+        theme: { mode: theme.palette.mode },
         responsive: [
             {
                 breakpoint: 480,
                 options: {
-                    chart: {
-                        width: '100%'
-                    },
-                    legend: {
-                        position: 'bottom'
-                    }
+                    chart: { width: '100%' },
+                    legend: { position: 'bottom' }
                 }
             }
         ]
@@ -101,6 +92,20 @@ const Dashboard = () => {
             data: [1.12, 1.13, 1.15, 1.14, 1.16, 1.15]
         }
     ];
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbar({ ...snackbar, open: false });
+    };
+
+    const handleQuickTrade = () => {
+        navigate('/trading');
+        setSnackbar({
+            open: true,
+            message: 'Redirecting to trading page',
+            severity: 'info'
+        });
+    };
 
     if (quotesLoading || accountLoading || dashboardLoading) {
         return <Loading />;
@@ -176,7 +181,7 @@ const Dashboard = () => {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => navigate('/trading')}
+                                    onClick={handleQuickTrade}
                                     fullWidth
                                 >
                                     {language === 'en'
@@ -303,6 +308,19 @@ const Dashboard = () => {
                     </Grid>
                 </Box>
             </Container>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+            >
+                <Alert
+                    onClose={handleSnackbarClose}
+                    severity={snackbar.severity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </>
     );
 };

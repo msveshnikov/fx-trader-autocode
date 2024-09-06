@@ -15,6 +15,7 @@ import createCustomTheme from './utils/theme';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import PrivateRoute from './components/PrivateRoute';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Trading = lazy(() => import('./pages/Trading'));
@@ -33,6 +34,7 @@ const queryClient = new QueryClient();
 function App() {
     const [darkMode, setDarkMode] = useState(false);
     const [language, setLanguage] = useState('en');
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
         const savedMode = localStorage.getItem('darkMode');
@@ -43,6 +45,8 @@ function App() {
         if (savedLanguage) {
             setLanguage(savedLanguage);
         }
+        const token = localStorage.getItem('authToken');
+        setIsAuthenticated(!!token);
     }, []);
 
     const toggleDarkMode = () => {
@@ -83,6 +87,8 @@ function App() {
                                 <Header
                                     toggleTheme={toggleDarkMode}
                                     changeLanguage={changeLanguage}
+                                    isAuthenticated={isAuthenticated}
+                                    setIsAuthenticated={setIsAuthenticated}
                                 />
                                 <Suspense fallback={<Loading />}>
                                     <Routes>
@@ -97,7 +103,13 @@ function App() {
                                         />
                                         <Route
                                             path="/login"
-                                            element={<Login />}
+                                            element={
+                                                <Login
+                                                    setIsAuthenticated={
+                                                        setIsAuthenticated
+                                                    }
+                                                />
+                                            }
                                         />
                                         <Route
                                             path="/register"
@@ -105,39 +117,111 @@ function App() {
                                         />
                                         <Route
                                             path="/dashboard"
-                                            element={<Dashboard />}
+                                            element={
+                                                <PrivateRoute
+                                                    isAuthenticated={
+                                                        isAuthenticated
+                                                    }
+                                                >
+                                                    <Dashboard />
+                                                </PrivateRoute>
+                                            }
                                         />
                                         <Route
                                             path="/trading"
-                                            element={<Trading />}
+                                            element={
+                                                <PrivateRoute
+                                                    isAuthenticated={
+                                                        isAuthenticated
+                                                    }
+                                                >
+                                                    <Trading />
+                                                </PrivateRoute>
+                                            }
                                         />
                                         <Route
                                             path="/positions"
-                                            element={<Positions />}
+                                            element={
+                                                <PrivateRoute
+                                                    isAuthenticated={
+                                                        isAuthenticated
+                                                    }
+                                                >
+                                                    <Positions />
+                                                </PrivateRoute>
+                                            }
                                         />
                                         <Route
                                             path="/history"
-                                            element={<History />}
+                                            element={
+                                                <PrivateRoute
+                                                    isAuthenticated={
+                                                        isAuthenticated
+                                                    }
+                                                >
+                                                    <History />
+                                                </PrivateRoute>
+                                            }
                                         />
                                         <Route
                                             path="/account"
-                                            element={<Account />}
+                                            element={
+                                                <PrivateRoute
+                                                    isAuthenticated={
+                                                        isAuthenticated
+                                                    }
+                                                >
+                                                    <Account />
+                                                </PrivateRoute>
+                                            }
                                         />
                                         <Route
                                             path="/risk-management"
-                                            element={<RiskManagement />}
+                                            element={
+                                                <PrivateRoute
+                                                    isAuthenticated={
+                                                        isAuthenticated
+                                                    }
+                                                >
+                                                    <RiskManagement />
+                                                </PrivateRoute>
+                                            }
                                         />
                                         <Route
                                             path="/market-news"
-                                            element={<MarketNews />}
+                                            element={
+                                                <PrivateRoute
+                                                    isAuthenticated={
+                                                        isAuthenticated
+                                                    }
+                                                >
+                                                    <MarketNews />
+                                                </PrivateRoute>
+                                            }
                                         />
                                         <Route
                                             path="/economic-calendar"
-                                            element={<EconomicCalendar />}
+                                            element={
+                                                <PrivateRoute
+                                                    isAuthenticated={
+                                                        isAuthenticated
+                                                    }
+                                                >
+                                                    <EconomicCalendar />
+                                                </PrivateRoute>
+                                            }
                                         />
                                         <Route
                                             path="/realtime"
-                                            element={<Realtime />}
+                                            element={
+                                                <PrivateRoute
+                                                    isAuthenticated={
+                                                        isAuthenticated
+                                                    }
+                                                >
+                                                    <Realtime />
+                                                </PrivateRoute>
+                                            }
                                         />
                                     </Routes>
                                 </Suspense>
