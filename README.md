@@ -100,3 +100,7 @@ fx-trading-platform/
 -   Add user behavior analytics for UX improvements
 -   Implement performance monitoring and real-time alerting
 -   Create a dashboard for key performance indicators (KPIs)
+
+# TODO
+
+-   add privacy and terms pages

@@ -29,6 +29,8 @@ const RiskManagement = lazy(() => import('./pages/RiskManagement'));
 const MarketNews = lazy(() => import('./pages/MarketNews'));
 const EconomicCalendar = lazy(() => import('./pages/EconomicCalendar'));
 const Realtime = lazy(() => import('./pages/Realtime'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
 
 const queryClient = new QueryClient();
 
@@ -231,6 +233,8 @@ function App() {
                                                 </PrivateRoute>
                                             }
                                         />
+                                        <Route path="/privacy" element={<Privacy />} />
+                                        <Route path="/terms" element={<Terms />} />
                                     </Routes>
                                 </Suspense>
                                 <Footer />

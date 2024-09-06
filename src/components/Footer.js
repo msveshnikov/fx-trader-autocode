@@ -105,7 +105,7 @@ const Footer = () => {
                     >
                         {'© '}
                         {new Date().getFullYear()}{' '}
-                        <Link color="inherit" href="https://example.com/">
+                        <Link color="inherit" href="https://autocode.work/">
                             FX Trading Platform
                         </Link>
                         {'. All rights reserved.'}
