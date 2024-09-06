@@ -5,9 +5,7 @@ import {
     Paper,
     Typography,
     Box,
-    Button,
-    useMediaQuery
-} from '@mui/material';
+    Button} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';

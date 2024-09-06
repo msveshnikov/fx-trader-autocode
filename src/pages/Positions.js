@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import {
     Container,
     Typography,
@@ -10,45 +10,46 @@ import {
     TableRow,
     Paper,
     Button,
-    CircularProgress,
     Box
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import apiService from '../services/apiService';
+import Loading from '../components/Loading';
 
 const Positions = () => {
-    const [positions, setPositions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const theme = useTheme();
+    const queryClient = useQueryClient();
 
-    const fetchPositions = useCallback(async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const data = await apiService.getPositions(token);
-            setPositions(data);
-            setLoading(false);
-        } catch (error) {
-            setError('Error fetching positions: ' + error.message);
-            setLoading(false);
+    const {
+        data: positions,
+        isLoading,
+        isError,
+        error
+    } = useQuery('positions', () =>
+        apiService.getPositions(localStorage.getItem('token'))
+    );
+
+    const closePositionMutation = useMutation(
+        (positionId) =>
+            apiService.closePosition(positionId, localStorage.getItem('token')),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('positions');
+            }
         }
-    }, []);
+    );
 
-    useEffect(() => {
-        fetchPositions();
-    }, [fetchPositions]);
+    const handleClosePosition = useCallback(
+        (positionId) => {
+            closePositionMutation.mutate(positionId);
+        },
+        [closePositionMutation]
+    );
 
-    const closePosition = async (positionId) => {
-        try {
-            const token = localStorage.getItem('token');
-            await apiService.closePosition(positionId, token);
-            fetchPositions();
-        } catch (error) {
-            setError('Error closing position: ' + error.message);
-        }
-    };
+    if (isLoading) return <Loading />;
 
-    if (loading) {
+    if (isError) {
         return (
             <Box
                 display="flex"
@@ -56,20 +57,7 @@ const Positions = () => {
                 alignItems="center"
                 minHeight="100vh"
             >
-                <CircularProgress />
-            </Box>
-        );
-    }
-
-    if (error) {
-        return (
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                minHeight="100vh"
-            >
-                <Typography color="error">{error}</Typography>
+                <Typography color="error">{error.message}</Typography>
             </Box>
         );
     }
@@ -92,16 +80,16 @@ const Positions = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {positions.map((position) => (
+                        {positions?.map((position) => (
                             <TableRow key={position.id}>
                                 <TableCell component="th" scope="row">
-                                    {position.currencyPair}
+                                    {position.pair}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {position.size}
+                                    {position.amount}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {position.entryPrice}
+                                    {position.openPrice}
                                 </TableCell>
                                 <TableCell align="right">
                                     {position.currentPrice}
@@ -110,19 +98,25 @@ const Positions = () => {
                                     align="right"
                                     style={{
                                         color:
-                                            position.profitLoss >= 0
+                                            position.currentPrice -
+                                                position.openPrice >=
+                                            0
                                                 ? theme.palette.success.main
                                                 : theme.palette.error.main
                                     }}
                                 >
-                                    {position.profitLoss}
+                                    {(
+                                        (position.currentPrice -
+                                            position.openPrice) *
+                                        position.amount
+                                    )?.toFixed(2)}
                                 </TableCell>
                                 <TableCell align="right">
                                     <Button
                                         variant="contained"
                                         color="secondary"
                                         onClick={() =>
-                                            closePosition(position.id)
+                                            handleClosePosition(position.id)
                                         }
                                     >
                                         Close

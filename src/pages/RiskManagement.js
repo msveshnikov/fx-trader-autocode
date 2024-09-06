@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import {
     Container,
     Typography,
@@ -13,46 +13,49 @@ import {
     TableHead,
     TableRow,
     Alert,
-    Box,
-    CircularProgress
+    Box
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import apiService from '../services/apiService';
+import Loading from '../components/Loading';
 
 const RiskManagement = () => {
-    const [riskMetrics, setRiskMetrics] = useState({
-        totalExposure: 0,
-        maxDrawdown: 0,
-        sharpeRatio: 0
-    });
     const [riskLimits, setRiskLimits] = useState({
         maxExposure: 0,
         stopLossPercentage: 0
     });
     const [alertMessage, setAlertMessage] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const theme = useTheme();
+    const queryClient = useQueryClient();
 
-    const fetchRiskData = useCallback(async () => {
-        try {
-            const token = localStorage.getItem('token');
-            const [metrics, limits] = await Promise.all([
-                apiService.getRiskMetrics(token),
-                apiService.getRiskLimits(token)
-            ]);
-            setRiskMetrics(metrics);
-            setRiskLimits(limits);
-        } catch (error) {
-            setError('Failed to load risk data: ' + error.message);
-        } finally {
-            setLoading(false);
+    const {
+        data: riskMetrics,
+        isLoading,
+        isError,
+        error
+    } = useQuery('riskMetrics', () =>
+        apiService.getRiskMetrics(localStorage.getItem('token'))
+    );
+
+    const updateRiskLimitsMutation = useMutation(
+        (newLimits) =>
+            apiService.updateRiskLimits(
+                newLimits,
+                localStorage.getItem('token')
+            ),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('riskMetrics');
+                setAlertMessage('Risk limits updated successfully');
+            },
+            onError: (error) => {
+                setAlertMessage(
+                    'Failed to update risk limits: ' + error.message
+                );
+            }
         }
-    }, []);
-
-    useEffect(() => {
-        fetchRiskData();
-    }, [fetchRiskData]);
+    );
 
     const handleLimitChange = (event) => {
         const { name, value } = event.target;
@@ -62,34 +65,16 @@ const RiskManagement = () => {
         }));
     };
 
-    const handleUpdateLimits = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            await apiService.updateRiskLimits(riskLimits, token);
-            setAlertMessage('Risk limits updated successfully');
-            fetchRiskData();
-        } catch (error) {
-            setAlertMessage('Failed to update risk limits: ' + error.message);
-        }
+    const handleUpdateLimits = () => {
+        updateRiskLimitsMutation.mutate(riskLimits);
     };
 
-    if (loading) {
-        return (
-            <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                minHeight="100vh"
-            >
-                <CircularProgress />
-            </Box>
-        );
-    }
+    if (isLoading) return <Loading />;
 
-    if (error) {
+    if (isError) {
         return (
             <Container maxWidth="lg">
-                <Typography color="error">{error}</Typography>
+                <Typography color="error">{error.message}</Typography>
             </Container>
         );
     }
@@ -132,15 +117,21 @@ const RiskManagement = () => {
                                         </TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell>Max Drawdown</TableCell>
+                                        <TableCell>Margin Used</TableCell>
                                         <TableCell align="right">
-                                            {riskMetrics.maxDrawdown}%
+                                            {riskMetrics.marginUsed}
                                         </TableCell>
                                     </TableRow>
                                     <TableRow>
-                                        <TableCell>Sharpe Ratio</TableCell>
+                                        <TableCell>Margin Available</TableCell>
                                         <TableCell align="right">
-                                            {riskMetrics.sharpeRatio}
+                                            {riskMetrics.marginAvailable}
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Risk Level</TableCell>
+                                        <TableCell align="right">
+                                            {riskMetrics.riskLevel}
                                         </TableCell>
                                     </TableRow>
                                 </TableBody>

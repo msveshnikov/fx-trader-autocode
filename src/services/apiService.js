@@ -64,7 +64,7 @@ const apiService = {
         });
     },
 
-    getTradeHistory: async () => {
+    getTradeHistory: async (token, startDate, endDate) => {
         await mockDelay(500);
         return mockResponse([
             {
@@ -73,7 +73,10 @@ const apiService = {
                 amount: 10000,
                 openPrice: 1.1234,
                 closePrice: 1.1256,
-                profit: 220
+                profit: 220,
+                date: '2023-05-01T10:30:00Z',
+                type: 'Buy',
+                status: 'Closed'
             },
             {
                 id: 2,
@@ -81,7 +84,10 @@ const apiService = {
                 amount: 5000,
                 openPrice: 150.67,
                 closePrice: 150.89,
-                profit: 110
+                profit: 110,
+                date: '2023-05-02T14:45:00Z',
+                type: 'Sell',
+                status: 'Closed'
             }
         ]);
     },
@@ -130,17 +136,24 @@ const apiService = {
         );
     },
 
-    getRiskMetrics: async () => {
+    getRiskMetrics: async (token) => {
         await mockDelay(400);
         return mockResponse({
             totalExposure: 100000,
-            marginUsed: 5000,
-            marginAvailable: 45000,
-            riskLevel: 'Low'
+            maxDrawdown: 5.2,
+            sharpeRatio: 1.8
         });
     },
 
-    updateRiskLimits: async (riskLimits) => {
+    getRiskLimits: async (token) => {
+        await mockDelay(300);
+        return mockResponse({
+            maxExposure: 150000,
+            stopLossPercentage: 2
+        });
+    },
+
+    updateRiskLimits: async (riskLimits, token) => {
         await mockDelay(300);
         return mockResponse({ message: 'Risk limits updated successfully' });
     },
@@ -259,16 +272,64 @@ const apiService = {
         return mockResponse(allNews.slice(startIndex, endIndex));
     },
 
-    getEconomicCalendar: async () => {
+    getEconomicCalendar: async (startDate, endDate) => {
         await mockDelay(400);
         return mockResponse([
             {
                 id: 1,
                 event: 'US Non-Farm Payrolls',
                 date: '2023-05-05',
-                impact: 'High'
+                time: '12:30 GMT',
+                currency: 'USD',
+                importance: 'High',
+                actual: '253K',
+                forecast: '180K',
+                previous: '236K'
             },
-            { id: 2, event: 'UK GDP', date: '2023-05-10', impact: 'Medium' }
+            {
+                id: 2,
+                event: 'UK GDP',
+                date: '2023-05-10',
+                time: '06:00 GMT',
+                currency: 'GBP',
+                importance: 'Medium',
+                actual: null,
+                forecast: '0.1%',
+                previous: '0.3%'
+            },
+            {
+                id: 3,
+                event: 'ECB Interest Rate Decision',
+                date: '2023-05-15',
+                time: '11:45 GMT',
+                currency: 'EUR',
+                importance: 'High',
+                actual: null,
+                forecast: '3.75%',
+                previous: '3.50%'
+            },
+            {
+                id: 4,
+                event: 'Australia Employment Change',
+                date: '2023-05-18',
+                time: '01:30 GMT',
+                currency: 'AUD',
+                importance: 'Medium',
+                actual: null,
+                forecast: '20.0K',
+                previous: '-4.3K'
+            },
+            {
+                id: 5,
+                event: 'Canada CPI',
+                date: '2023-05-20',
+                time: '12:30 GMT',
+                currency: 'CAD',
+                importance: 'Medium',
+                actual: null,
+                forecast: '0.5%',
+                previous: '0.4%'
+            }
         ]);
     }
 };

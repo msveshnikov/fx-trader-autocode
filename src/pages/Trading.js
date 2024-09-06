@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
     Container,
     Grid,
@@ -38,8 +38,18 @@ const Trading = () => {
         'currencyPairs',
         apiService.fetchCurrencyPairs
     );
+
     const { data: orders, isLoading: ordersLoading } = useQuery('orders', () =>
         apiService.getPositions(localStorage.getItem('token'))
+    );
+
+    const { data: quotes, isLoading: quotesLoading } = useQuery(
+        ['quotes', currencyPairs],
+        () => apiService.getQuotes(currencyPairs || []),
+        {
+            enabled: !!currencyPairs,
+            refetchInterval: 5000
+        }
     );
 
     const placeMutation = useMutation(
@@ -73,7 +83,7 @@ const Trading = () => {
         return currencyPairs ? [...currencyPairs].sort() : [];
     }, [currencyPairs]);
 
-    if (pairsLoading || ordersLoading) return <Loading />;
+    if (pairsLoading || ordersLoading || quotesLoading) return <Loading />;
 
     return (
         <>
@@ -202,8 +212,8 @@ const Trading = () => {
                         Real-time Quotes
                     </Typography>
                     <Grid container spacing={2}>
-                        {sortedCurrencyPairs.map((pair) => (
-                            <Grid item xs={12} sm={6} md={4} key={pair}>
+                        {quotes?.map((quote) => (
+                            <Grid item xs={12} sm={6} md={4} key={quote.pair}>
                                 <Paper
                                     elevation={3}
                                     sx={{
@@ -214,13 +224,11 @@ const Trading = () => {
                                     }}
                                 >
                                     <Typography variant="subtitle1">
-                                        {pair}
+                                        {quote.pair}
                                     </Typography>
                                     <Typography variant="h6">
-                                        {(
-                                            Math.random() * (1.5 - 0.5) +
-                                            0.5
-                                        ).toFixed(4)}
+                                        Bid: {quote.bid.toFixed(4)} | Ask:{' '}
+                                        {quote.ask.toFixed(4)}
                                     </Typography>
                                 </Paper>
                             </Grid>

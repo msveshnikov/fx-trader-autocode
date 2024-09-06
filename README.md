@@ -59,18 +59,16 @@ fx-trading-platform/
 -   Utilize custom hooks for reusable logic
 -   Implement error boundaries for robust error handling
 -   Use React Suspense for code-splitting and improved loading states
--   Implement accessibility features (WCAG compliance)
 -   Optimize for SEO with React Helmet
 -   Use React.memo and useMemo for performance optimization
 -   Implement progressive web app (PWA) features
 -   Utilize React Context API for global state management
 -   Implement React Query for efficient data fetching and caching
 -   Add CI/CD pipeline for automated testing and deployment
--   Implement GraphQL for more efficient API queries
 -   Use React Spring for smooth animations and transitions
 
 # TODO
 
 -   fix news.map is not a function TypeError: news.map is not a function
 -   FIX: Market news are empty
--   All data should be mocked
+-   All data should be mocked and mocks visible on pages

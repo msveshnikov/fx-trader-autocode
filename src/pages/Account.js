@@ -9,7 +9,6 @@ import {
     CircularProgress,
     Alert
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import apiService from '../services/apiService';
 
 const Account = () => {
@@ -22,7 +21,6 @@ const Account = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [successMessage, setSuccessMessage] = useState('');
-    const theme = useTheme();
 
     const fetchUserData = useCallback(async () => {
         try {
@@ -116,7 +114,7 @@ const Account = () => {
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="h6">
-                                Account Balance: ${user.balance.toFixed(2)}
+                                Account Balance: ${user?.balance?.toFixed(2)}
                             </Typography>
                         </Grid>
                         <Grid item xs={12}>

@@ -28,9 +28,11 @@ const MarketNews = () => {
         data: news,
         isLoading,
         isError,
-        error
+        error,
+        isFetching
     } = useQuery(['marketNews', page], fetchMarketNews, {
-        keepPreviousData: true
+        keepPreviousData: true,
+        staleTime: 5 * 60 * 1000
     });
 
     const handleLoadMore = () => {
@@ -84,7 +86,9 @@ const MarketNews = () => {
                                         display="block"
                                         sx={{ mt: 1 }}
                                     >
-                                        {new Date(item.date).toLocaleString()}
+                                        {new Date(
+                                            item.publishedAt
+                                        ).toLocaleString()}
                                     </Typography>
                                 </CardContent>
                             </Card>
@@ -95,10 +99,14 @@ const MarketNews = () => {
                 <Button
                     variant="contained"
                     onClick={handleLoadMore}
-                    disabled={isLoading}
+                    disabled={isFetching}
                     sx={{ backgroundColor: theme.palette.primary.main }}
                 >
-                    {isLoading ? <CircularProgress size={24} /> : 'Load More'}
+                    {isFetching ? (
+                        <CircularProgress size={24} />
+                    ) : (
+                        'Load More'
+                    )}
                 </Button>
             </Box>
         </Container>

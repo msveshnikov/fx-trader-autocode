@@ -16,46 +16,39 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
+import { useQuery } from 'react-query';
 import apiService from '../services/apiService';
 import Loading from '../components/Loading';
 
 const EconomicCalendar = () => {
-    const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
-    const fetchEconomicCalendar = async () => {
-        try {
-            setLoading(true);
-            const data = await apiService.getEconomicCalendar(
-                startDate,
-                endDate
-            );
-            setEvents(data);
-            setError(null);
-        } catch (error) {
-            setError('Error fetching economic calendar: ' + error.message);
-        } finally {
-            setLoading(false);
+    const { data: events, isLoading, isError, error, refetch } = useQuery(
+        ['economicCalendar', startDate, endDate],
+        () => apiService.getEconomicCalendar(startDate, endDate),
+        {
+            enabled: false
         }
-    };
+    );
 
     useEffect(() => {
-        fetchEconomicCalendar();
+        refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleFilter = () => {
-        fetchEconomicCalendar();
+        refetch();
     };
 
     const sortedEvents = useMemo(() => {
-        return [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
+        return events
+            ? [...events].sort((a, b) => new Date(a.date) - new Date(b.date))
+            : [];
     }, [events]);
 
-    if (loading) return <Loading />;
-    if (error) return <Typography color="error">{error}</Typography>;
+    if (isLoading) return <Loading />;
+    if (isError) return <Typography color="error">{error.message}</Typography>;
 
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -115,13 +108,13 @@ const EconomicCalendar = () => {
                                 <TableCell>
                                     {format(new Date(event.date), 'yyyy-MM-dd')}
                                 </TableCell>
-                                <TableCell>{event.time}</TableCell>
+                                <TableCell>{event.time || 'N/A'}</TableCell>
                                 <TableCell>{event.currency}</TableCell>
                                 <TableCell>{event.event}</TableCell>
-                                <TableCell>{event.importance}</TableCell>
-                                <TableCell>{event.actual}</TableCell>
-                                <TableCell>{event.forecast}</TableCell>
-                                <TableCell>{event.previous}</TableCell>
+                                <TableCell>{event.impact}</TableCell>
+                                <TableCell>{event.actual || 'N/A'}</TableCell>
+                                <TableCell>{event.forecast || 'N/A'}</TableCell>
+                                <TableCell>{event.previous || 'N/A'}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
