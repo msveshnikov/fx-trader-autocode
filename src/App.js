@@ -1,5 +1,10 @@
 import React, { lazy, Suspense, useState, useEffect, useMemo } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { Helmet } from "react-helmet";
@@ -23,68 +28,80 @@ const EconomicCalendar = lazy(() => import("./pages/EconomicCalendar"));
 const queryClient = new QueryClient();
 
 function App() {
-    const [darkMode, setDarkMode] = useState(false);
-    const [language, setLanguage] = useState("en");
+  const [darkMode, setDarkMode] = useState(false);
+  const [language, setLanguage] = useState("en");
 
-    useEffect(() => {
-        const savedMode = localStorage.getItem("darkMode");
-        if (savedMode !== null) {
-            setDarkMode(JSON.parse(savedMode));
-        }
-        const savedLanguage = localStorage.getItem("language");
-        if (savedLanguage) {
-            setLanguage(savedLanguage);
-        }
-    }, []);
+  useEffect(() => {
+    const savedMode = localStorage.getItem("darkMode");
+    if (savedMode !== null) {
+      setDarkMode(JSON.parse(savedMode));
+    }
+    const savedLanguage = localStorage.getItem("language");
+    if (savedLanguage) {
+      setLanguage(savedLanguage);
+    }
+  }, []);
 
-    const toggleDarkMode = () => {
-        const newMode = !darkMode;
-        setDarkMode(newMode);
-        localStorage.setItem("darkMode", JSON.stringify(newMode));
-    };
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem("darkMode", JSON.stringify(newMode));
+  };
 
-    const changeLanguage = (newLanguage) => {
-        setLanguage(newLanguage);
-        localStorage.setItem("language", newLanguage);
-    };
+  const changeLanguage = (newLanguage) => {
+    setLanguage(newLanguage);
+    localStorage.setItem("language", newLanguage);
+  };
 
-    const theme = useMemo(() => createCustomTheme(darkMode ? "dark" : "light"), [darkMode]);
+  const theme = useMemo(
+    () => createCustomTheme(darkMode ? "dark" : "light"),
+    [darkMode]
+  );
 
-    return (
-        <QueryClientProvider client={queryClient}>
-            <ThemeProvider theme={theme}>
-                <LanguageProvider value={{ language, changeLanguage }}>
-                    <CssBaseline />
-                    <Router>
-                        <div className="App">
-                            <Helmet>
-                                <title>FX Trading Platform</title>
-                                <meta name="description" content="Modern FX Trading Platform" />
-                                <link rel="manifest" href="/manifest.json" />
-                            </Helmet>
-                            <Header toggleTheme={toggleDarkMode} changeLanguage={changeLanguage} />
-                            <Suspense fallback={<Loading />}>
-                                <Routes>
-                                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                                    <Route path="/login" element={<Login />} />
-                                    <Route path="/register" element={<Register />} />
-                                    <Route path="/dashboard" element={<Dashboard />} />
-                                    <Route path="/trading" element={<Trading />} />
-                                    <Route path="/positions" element={<Positions />} />
-                                    <Route path="/history" element={<History />} />
-                                    <Route path="/account" element={<Account />} />
-                                    <Route path="/risk-management" element={<RiskManagement />} />
-                                    <Route path="/market-news" element={<MarketNews />} />
-                                    <Route path="/economic-calendar" element={<EconomicCalendar />} />
-                                </Routes>
-                            </Suspense>
-                            <Footer />
-                        </div>
-                    </Router>
-                </LanguageProvider>
-            </ThemeProvider>
-        </QueryClientProvider>
-    );
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <LanguageProvider value={{ language, changeLanguage }}>
+          <CssBaseline />
+          <Router>
+            <div className="App">
+              <Helmet>
+                <title>FX Trading Platform</title>
+                <meta name="description" content="Modern FX Trading Platform" />
+                <link rel="manifest" href="/manifest.json" />
+              </Helmet>
+              <Header
+                toggleTheme={toggleDarkMode}
+                changeLanguage={changeLanguage}
+              />
+              <Suspense fallback={<Loading />}>
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<Navigate to="/dashboard" replace />}
+                  />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/trading" element={<Trading />} />
+                  <Route path="/positions" element={<Positions />} />
+                  <Route path="/history" element={<History />} />
+                  <Route path="/account" element={<Account />} />
+                  <Route path="/risk-management" element={<RiskManagement />} />
+                  <Route path="/market-news" element={<MarketNews />} />
+                  <Route
+                    path="/economic-calendar"
+                    element={<EconomicCalendar />}
+                  />
+                </Routes>
+              </Suspense>
+              <Footer />
+            </div>
+          </Router>
+        </LanguageProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
 }
 
 export default App;

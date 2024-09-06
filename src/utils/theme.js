@@ -112,15 +112,18 @@ const createCustomTheme = (mode) => {
               minHeight: 24,
               border: `3px solid ${palette.background.default}`,
             },
-            "&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
-              backgroundColor: palette.primary.dark,
-            },
-            "&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active": {
-              backgroundColor: palette.primary.dark,
-            },
-            "&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover": {
-              backgroundColor: palette.primary.light,
-            },
+            "&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus":
+              {
+                backgroundColor: palette.primary.dark,
+              },
+            "&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active":
+              {
+                backgroundColor: palette.primary.dark,
+              },
+            "&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover":
+              {
+                backgroundColor: palette.primary.light,
+              },
             "&::-webkit-scrollbar-corner, & *::-webkit-scrollbar-corner": {
               backgroundColor: palette.background.default,
             },

@@ -1,6 +1,7 @@
 // src/services/apiService.js
 
-const BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://api.example.com";
+const BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "https://api.example.com";
 
 const handleResponse = async (response) => {
   if (!response.ok) {
@@ -30,7 +31,9 @@ const apiService = {
   },
 
   getQuotes: async (currencyPairs) => {
-    const response = await fetch(`${BASE_URL}/quotes?pairs=${currencyPairs.join(",")}`);
+    const response = await fetch(
+      `${BASE_URL}/quotes?pairs=${currencyPairs.join(",")}`
+    );
     return handleResponse(response);
   },
 
@@ -139,10 +142,13 @@ const apiService = {
   },
 
   markNotificationAsRead: async (notificationId, token) => {
-    const response = await fetch(`${BASE_URL}/notifications/${notificationId}`, {
-      method: "PUT",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const response = await fetch(
+      `${BASE_URL}/notifications/${notificationId}`,
+      {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     return handleResponse(response);
   },
 
