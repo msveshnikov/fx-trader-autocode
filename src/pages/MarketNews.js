@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     Container,
     Typography,
@@ -46,7 +46,7 @@ const MarketNews = () => {
                 Market News
             </Typography>
             <Grid container spacing={3}>
-                {news &&
+                {Array.isArray(news) &&
                     news.map((item) => (
                         <Grid item xs={12} sm={6} md={4} key={item.id}>
                             <Card
@@ -59,7 +59,10 @@ const MarketNews = () => {
                                 <CardMedia
                                     component="img"
                                     height="140"
-                                    image={item.imageUrl}
+                                    image={
+                                        item.imageUrl ||
+                                        'https://via.placeholder.com/300x140'
+                                    }
                                     alt={item.title}
                                 />
                                 <CardContent sx={{ flexGrow: 1 }}>
@@ -74,16 +77,14 @@ const MarketNews = () => {
                                         variant="body2"
                                         color="text.secondary"
                                     >
-                                        {item.summary}
+                                        {item.summary || 'No summary available'}
                                     </Typography>
                                     <Typography
                                         variant="caption"
                                         display="block"
                                         sx={{ mt: 1 }}
                                     >
-                                        {new Date(
-                                            item.publishedAt
-                                        ).toLocaleString()}
+                                        {new Date(item.date).toLocaleString()}
                                     </Typography>
                                 </CardContent>
                             </Card>

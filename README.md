@@ -2,7 +2,9 @@
 
 ## Overview
 
-This FX Trading Platform is a modern, responsive web application built with React, designed to provide users with a seamless foreign exchange trading experience.
+This FX Trading Platform is a modern, responsive web application built with
+React, designed to provide users with a seamless foreign exchange trading
+experience.
 
 ## Features
 
@@ -66,3 +68,9 @@ fx-trading-platform/
 -   Add CI/CD pipeline for automated testing and deployment
 -   Implement GraphQL for more efficient API queries
 -   Use React Spring for smooth animations and transitions
+
+# TODO
+
+-   fix news.map is not a function TypeError: news.map is not a function
+-   FIX: Market news are empty
+-   All data should be mocked
