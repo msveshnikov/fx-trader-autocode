@@ -79,10 +79,6 @@ function App() {
                                         name="description"
                                         content="Modern FX Trading Platform"
                                     />
-                                    <link
-                                        rel="manifest"
-                                        href="/manifest.json"
-                                    />
                                 </Helmet>
                                 <Header
                                     toggleTheme={toggleDarkMode}
