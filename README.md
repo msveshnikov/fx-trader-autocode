@@ -2,6 +2,8 @@
 
 ## Overview
 
+![alt text](image.png)
+
 This FX Trading Platform is a modern, responsive web application built with
 React, designed to provide users with a seamless foreign exchange trading
 experience.
