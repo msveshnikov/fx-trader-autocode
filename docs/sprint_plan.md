@@ -9,11 +9,6 @@ Implement core trading functionality with mock data and enhance user experience 
 ## Selected User Stories/Tasks (7 items)
 
 ### High Priority
-1. Implement mock data service (8 story points)
-   - Create mock data for all API endpoints
-   - Ensure mock data is visible on all pages
-   - Implement toggle between mock and real data
-
 2. Develop user onboarding flow (5 story points)
    - Create step-by-step guide for new users
    - Implement interactive tooltips for key features

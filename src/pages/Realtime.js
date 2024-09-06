@@ -5,20 +5,21 @@ import {
     Paper,
     Typography,
     Box,
-    useMediaQuery
+    useMediaQuery,
+    Button
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
 import apiService from '../services/apiService';
 import Loading from '../components/Loading';
-import { useLanguage } from '../contexts/LanguageContext';
 import Chart from 'react-apexcharts';
 
 const Realtime = () => {
     const [currencyPairs, setCurrencyPairs] = useState([]);
+    const [selectedPair, setSelectedPair] = useState('EUR/USD');
+    const [timeframe, setTimeframe] = useState('1m');
     const theme = useTheme();
-    const { language } = useLanguage();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const {
@@ -37,8 +38,8 @@ const Realtime = () => {
         data: chartData,
         isLoading: chartLoading,
         error: chartError
-    } = useQuery(['chartData', 'EUR/USD', '1m'], () =>
-        apiService.getChartData('EUR/USD', '1m')
+    } = useQuery(['chartData', selectedPair, timeframe], () =>
+        apiService.getChartData(selectedPair, timeframe)
     );
 
     useEffect(() => {
@@ -60,7 +61,7 @@ const Realtime = () => {
             }
         },
         title: {
-            text: 'EUR/USD Candlestick Chart',
+            text: `${selectedPair} Candlestick Chart`,
             align: 'left'
         },
         xaxis: {
@@ -88,6 +89,14 @@ const Realtime = () => {
         ];
     }, [chartData]);
 
+    const handlePairChange = (pair) => {
+        setSelectedPair(pair);
+    };
+
+    const handleTimeframeChange = (newTimeframe) => {
+        setTimeframe(newTimeframe);
+    };
+
     if (quotesLoading || chartLoading) {
         return <Loading />;
     }
@@ -110,34 +119,22 @@ const Realtime = () => {
     return (
         <>
             <Helmet>
-                <title>
-                    {language === 'en'
-                        ? 'Realtime FX Rates - FX Trading Platform'
-                        : 'Taux FX en temps réel - Plateforme de trading FX'}
-                </title>
+                <title>Realtime FX Rates - FX Trading Platform</title>
                 <meta
                     name="description"
-                    content={
-                        language === 'en'
-                            ? 'View real-time FX rates and candlestick charts for major currency pairs.'
-                            : 'Consultez les taux FX en temps réel et les graphiques en chandeliers pour les principales paires de devises.'
-                    }
+                    content="View real-time FX rates and candlestick charts for major currency pairs."
                 />
             </Helmet>
             <Container maxWidth="lg">
                 <Box my={4}>
                     <Typography variant="h4" component="h1" gutterBottom>
-                        {language === 'en'
-                            ? 'Realtime FX Rates'
-                            : 'Taux FX en temps réel'}
+                        Realtime FX Rates
                     </Typography>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    {language === 'en'
-                                        ? 'Currency Pairs'
-                                        : 'Paires de devises'}
+                                    Currency Pairs
                                 </Typography>
                                 {sortedCurrencyPairs.length > 0 ? (
                                     <Grid container spacing={2}>
@@ -157,23 +154,23 @@ const Realtime = () => {
                                                             backgroundColor:
                                                                 theme.palette
                                                                     .background
-                                                                    .default
+                                                                    .default,
+                                                            cursor: 'pointer'
                                                         }}
+                                                        onClick={() =>
+                                                            handlePairChange(
+                                                                pair
+                                                            )
+                                                        }
                                                     >
                                                         <Typography variant="subtitle1">
                                                             {pair}
                                                         </Typography>
                                                         <Typography variant="body2">
-                                                            {language === 'en'
-                                                                ? 'Bid:'
-                                                                : 'Achat:'}{' '}
-                                                            {bid.toFixed(5)}
+                                                            Bid: {bid.toFixed(5)}
                                                         </Typography>
                                                         <Typography variant="body2">
-                                                            {language === 'en'
-                                                                ? 'Ask:'
-                                                                : 'Vente:'}{' '}
-                                                            {ask.toFixed(5)}
+                                                            Ask: {ask.toFixed(5)}
                                                         </Typography>
                                                     </Paper>
                                                 </Grid>
@@ -182,9 +179,7 @@ const Realtime = () => {
                                     </Grid>
                                 ) : (
                                     <Typography>
-                                        {language === 'en'
-                                            ? 'No currency pairs available'
-                                            : 'Aucune paire de devises disponible'}
+                                        No currency pairs available
                                     </Typography>
                                 )}
                             </Paper>
@@ -192,10 +187,48 @@ const Realtime = () => {
                         <Grid item xs={12}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    {language === 'en'
-                                        ? 'EUR/USD Candlestick Chart'
-                                        : 'Graphique en chandeliers EUR/USD'}
+                                    {selectedPair} Candlestick Chart
                                 </Typography>
+                                <Box mb={2}>
+                                    <Button
+                                        variant={
+                                            timeframe === '1m'
+                                                ? 'contained'
+                                                : 'outlined'
+                                        }
+                                        onClick={() =>
+                                            handleTimeframeChange('1m')
+                                        }
+                                        sx={{ mr: 1 }}
+                                    >
+                                        1M
+                                    </Button>
+                                    <Button
+                                        variant={
+                                            timeframe === '5m'
+                                                ? 'contained'
+                                                : 'outlined'
+                                        }
+                                        onClick={() =>
+                                            handleTimeframeChange('5m')
+                                        }
+                                        sx={{ mr: 1 }}
+                                    >
+                                        5M
+                                    </Button>
+                                    <Button
+                                        variant={
+                                            timeframe === '1h'
+                                                ? 'contained'
+                                                : 'outlined'
+                                        }
+                                        onClick={() =>
+                                            handleTimeframeChange('1h')
+                                        }
+                                    >
+                                        1H
+                                    </Button>
+                                </Box>
                                 <Box height={350}>
                                     <Chart
                                         options={chartOptions}

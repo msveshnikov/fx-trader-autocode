@@ -16,6 +16,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import PrivateRoute from './components/PrivateRoute';
+import Onboarding from './components/Onboarding';
 
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Trading = lazy(() => import('./pages/Trading'));
@@ -35,6 +36,7 @@ function App() {
     const [darkMode, setDarkMode] = useState(false);
     const [language, setLanguage] = useState('en');
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [showOnboarding, setShowOnboarding] = useState(false);
 
     useEffect(() => {
         const savedMode = localStorage.getItem('darkMode');
@@ -47,6 +49,8 @@ function App() {
         }
         const token = localStorage.getItem('authToken');
         setIsAuthenticated(!!token);
+        const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+        setShowOnboarding(!onboardingCompleted);
     }, []);
 
     const toggleDarkMode = () => {
@@ -64,6 +68,11 @@ function App() {
         () => createCustomTheme(darkMode ? 'dark' : 'light'),
         [darkMode]
     );
+
+    const handleOnboardingComplete = () => {
+        setShowOnboarding(false);
+        localStorage.setItem('onboardingCompleted', 'true');
+    };
 
     return (
         <QueryClientProvider client={queryClient}>
@@ -86,6 +95,9 @@ function App() {
                                     isAuthenticated={isAuthenticated}
                                     setIsAuthenticated={setIsAuthenticated}
                                 />
+                                {showOnboarding && isAuthenticated && (
+                                    <Onboarding onComplete={handleOnboardingComplete} />
+                                )}
                                 <Suspense fallback={<Loading />}>
                                     <Routes>
                                         <Route

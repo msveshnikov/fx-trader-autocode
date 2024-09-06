@@ -16,11 +16,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import LanguageIcon from '@mui/icons-material/Language';
 
 const Header = ({ toggleTheme }) => {
     const [anchorEl, setAnchorEl] = useState(null);
-    const [languageAnchorEl, setLanguageAnchorEl] = useState(null);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -30,18 +28,6 @@ const Header = ({ toggleTheme }) => {
 
     const handleClose = () => {
         setAnchorEl(null);
-    };
-
-    const handleLanguageMenu = (event) => {
-        setLanguageAnchorEl(event.currentTarget);
-    };
-
-    const handleLanguageClose = () => {
-        setLanguageAnchorEl(null);
-    };
-
-    const handleLanguageChange = (lang) => {
-        handleLanguageClose();
     };
 
     const menuItems = [
@@ -99,13 +85,7 @@ const Header = ({ toggleTheme }) => {
                         <Brightness4Icon />
                     )}
                 </IconButton>
-                <IconButton
-                    sx={{ ml: 1 }}
-                    onClick={handleLanguageMenu}
-                    color="inherit"
-                >
-                    <LanguageIcon />
-                </IconButton>
+
                 <Button color="inherit" component={RouterLink} to="/account">
                     Account
                 </Button>
@@ -138,20 +118,6 @@ const Header = ({ toggleTheme }) => {
                         {item.label}
                     </MenuItem>
                 ))}
-            </Menu>
-            <Menu
-                id="language-menu"
-                anchorEl={languageAnchorEl}
-                open={Boolean(languageAnchorEl)}
-                onClose={handleLanguageClose}
-            >
-                <MenuItem onClick={() => handleLanguageChange('en')}>
-                    English
-                </MenuItem>
-
-                <MenuItem onClick={() => handleLanguageChange('fr')}>
-                    Français
-                </MenuItem>
             </Menu>
         </AppBar>
     );

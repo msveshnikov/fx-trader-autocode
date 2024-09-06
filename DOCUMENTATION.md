@@ -42,7 +42,6 @@ The FX Trading Platform is a modern, responsive web application built with React
 - Redux for complex state management
 - React Spring for animations
 - Socket.io for real-time updates
-- i18next for internationalization
 - React Helmet for SEO optimization
 - ApexCharts for data visualization
 

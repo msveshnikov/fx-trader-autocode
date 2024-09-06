@@ -8,16 +8,15 @@ import {
     Button,
     useMediaQuery,
     Snackbar,
-    Alert
-} from '@mui/material';
+    Alert} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
 import apiService from '../services/apiService';
 import Loading from '../components/Loading';
-import { useLanguage } from '../contexts/LanguageContext';
 import Chart from 'react-apexcharts';
+import Onboarding from '../components/Onboarding';
 
 const Dashboard = () => {
     const [currencyPairs, setCurrencyPairs] = useState([]);
@@ -28,9 +27,9 @@ const Dashboard = () => {
         message: '',
         severity: 'info'
     });
+    const [showOnboarding, setShowOnboarding] = useState(true);
     const navigate = useNavigate();
     const theme = useTheme();
-    const { language } = useLanguage();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     const {
@@ -107,6 +106,21 @@ const Dashboard = () => {
         });
     };
 
+    const onboardingSteps = [
+        {
+            target: '#account-balance',
+            content: 'This is your current account balance.'
+        },
+        {
+            target: '#quick-trade',
+            content: 'Click here to start trading quickly.'
+        },
+        {
+            target: '#currency-pairs',
+            content: 'View real-time currency pair quotes here.'
+        }
+    ];
+
     if (quotesLoading || accountLoading || dashboardLoading) {
         return <Loading />;
     }
@@ -131,52 +145,42 @@ const Dashboard = () => {
     return (
         <>
             <Helmet>
-                <title>
-                    {language === 'en'
-                        ? 'Dashboard - FX Trading Platform'
-                        : 'Tableau de bord - Plateforme de trading FX'}
-                </title>
+                <title>Dashboard - FX Trading Platform</title>
                 <meta
                     name="description"
-                    content={
-                        language === 'en'
-                            ? 'View your FX trading dashboard with real-time currency pair quotes and account information.'
-                            : 'Consultez votre tableau de bord de trading FX avec des cotations de paires de devises en temps réel et des informations sur votre compte.'
-                    }
+                    content="View your FX trading dashboard with real-time currency pair quotes and account information."
                 />
             </Helmet>
             <Container maxWidth="lg">
                 <Box my={4}>
                     <Typography variant="h4" component="h1" gutterBottom>
-                        {language === 'en' ? 'Dashboard' : 'Tableau de bord'}
+                        Dashboard
                     </Typography>
                     <Grid container spacing={3}>
                         <Grid item xs={12} md={6}>
-                            <Paper elevation={3} sx={{ p: 2 }}>
+                            <Paper
+                                elevation={3}
+                                sx={{ p: 2 }}
+                                id="account-balance"
+                            >
                                 <Typography variant="h6" gutterBottom>
-                                    {language === 'en'
-                                        ? 'Account Balance'
-                                        : 'Solde du compte'}
+                                    Account Balance
                                 </Typography>
                                 {accountBalance !== null ? (
                                     <Typography variant="h4">
-                                        {accountBalance}
+                                        ${accountBalance.toFixed(2)}
                                     </Typography>
                                 ) : (
                                     <Typography>
-                                        {language === 'en'
-                                            ? 'Balance unavailable'
-                                            : 'Solde indisponible'}
+                                        Balance unavailable
                                     </Typography>
                                 )}
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={6}>
-                            <Paper elevation={3} sx={{ p: 2 }}>
+                            <Paper elevation={3} sx={{ p: 2 }} id="quick-trade">
                                 <Typography variant="h6" gutterBottom>
-                                    {language === 'en'
-                                        ? 'Quick Trade'
-                                        : 'Trade rapide'}
+                                    Quick Trade
                                 </Typography>
                                 <Button
                                     variant="contained"
@@ -184,18 +188,18 @@ const Dashboard = () => {
                                     onClick={handleQuickTrade}
                                     fullWidth
                                 >
-                                    {language === 'en'
-                                        ? 'Start Trading'
-                                        : 'Commencer à trader'}
+                                    Start Trading
                                 </Button>
                             </Paper>
                         </Grid>
                         <Grid item xs={12}>
-                            <Paper elevation={3} sx={{ p: 2 }}>
+                            <Paper
+                                elevation={3}
+                                sx={{ p: 2 }}
+                                id="currency-pairs"
+                            >
                                 <Typography variant="h6" gutterBottom>
-                                    {language === 'en'
-                                        ? 'Currency Pairs'
-                                        : 'Paires de devises'}
+                                    Currency Pairs
                                 </Typography>
                                 {sortedCurrencyPairs.length > 0 ? (
                                     <Grid container spacing={2}>
@@ -222,16 +226,10 @@ const Dashboard = () => {
                                                             {pair}
                                                         </Typography>
                                                         <Typography variant="body2">
-                                                            {language === 'en'
-                                                                ? 'Bid:'
-                                                                : 'Achat:'}{' '}
-                                                            {bid.toFixed(5)}
+                                                            Bid: {bid.toFixed(5)}
                                                         </Typography>
                                                         <Typography variant="body2">
-                                                            {language === 'en'
-                                                                ? 'Ask:'
-                                                                : 'Vente:'}{' '}
-                                                            {ask.toFixed(5)}
+                                                            Ask: {ask.toFixed(5)}
                                                         </Typography>
                                                     </Paper>
                                                 </Grid>
@@ -240,9 +238,7 @@ const Dashboard = () => {
                                     </Grid>
                                 ) : (
                                     <Typography>
-                                        {language === 'en'
-                                            ? 'No currency pairs available'
-                                            : 'Aucune paire de devises disponible'}
+                                        No currency pairs available
                                     </Typography>
                                 )}
                             </Paper>
@@ -251,9 +247,7 @@ const Dashboard = () => {
                             <Grid item xs={12} md={6}>
                                 <Paper elevation={3} sx={{ p: 2 }}>
                                     <Typography variant="h6" gutterBottom>
-                                        {language === 'en'
-                                            ? 'Open Positions'
-                                            : 'Positions ouvertes'}
+                                        Open Positions
                                     </Typography>
                                     <Button
                                         variant="outlined"
@@ -261,9 +255,7 @@ const Dashboard = () => {
                                         onClick={() => navigate('/positions')}
                                         fullWidth
                                     >
-                                        {language === 'en'
-                                            ? 'View Positions'
-                                            : 'Voir les positions'}
+                                        View Positions
                                     </Button>
                                 </Paper>
                             </Grid>
@@ -271,9 +263,7 @@ const Dashboard = () => {
                         <Grid item xs={12} md={6}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    {language === 'en'
-                                        ? 'Recent Orders'
-                                        : 'Ordres récents'}
+                                    Recent Orders
                                 </Typography>
                                 <Button
                                     variant="outlined"
@@ -281,18 +271,14 @@ const Dashboard = () => {
                                     onClick={() => navigate('/history')}
                                     fullWidth
                                 >
-                                    {language === 'en'
-                                        ? 'View Order History'
-                                        : "Voir l'historique des ordres"}
+                                    View Order History
                                 </Button>
                             </Paper>
                         </Grid>
                         <Grid item xs={12}>
                             <Paper elevation={3} sx={{ p: 2 }}>
                                 <Typography variant="h6" gutterBottom>
-                                    {language === 'en'
-                                        ? 'Market Chart'
-                                        : 'Graphique de marché'}
+                                    Market Chart
                                 </Typography>
                                 <Box height={300}>
                                     <Chart
@@ -321,6 +307,12 @@ const Dashboard = () => {
                     {snackbar.message}
                 </Alert>
             </Snackbar>
+            {showOnboarding && (
+                <Onboarding
+                    steps={onboardingSteps}
+                    onComplete={() => setShowOnboarding(false)}
+                />
+            )}
         </>
     );
 };
