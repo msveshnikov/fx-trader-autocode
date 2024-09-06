@@ -6,6 +6,10 @@ This FX Trading Platform is a modern, responsive web application built with
 React, designed to provide users with a seamless foreign exchange trading
 experience.
 
+# DEMO
+
+https://fx-trader-autocode.onrender.com
+
 ## Features
 
 -   Real-time currency pair quotes
