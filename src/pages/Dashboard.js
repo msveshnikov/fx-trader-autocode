@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';
 import { useQuery } from 'react-query';
-import { useSpring, animated } from 'react-spring';
 import apiService from '../services/apiService';
 import Loading from '../components/Loading';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -66,12 +65,6 @@ const Dashboard = () => {
     const sortedCurrencyPairs = useMemo(() => {
         return [...currencyPairs].sort((a, b) => a.pair.localeCompare(b.pair));
     }, [currencyPairs]);
-
-    const balanceAnimation = useSpring({
-        number: accountBalance || 0,
-        from: { number: 0 },
-        config: { duration: 1000 }
-    });
 
     const chartOptions = {
         chart: {
