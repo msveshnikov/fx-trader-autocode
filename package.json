@@ -24,15 +24,12 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject",
         "lint": "eslint src/**/*.{js,jsx}",
         "format": "prettier --write src/**/*.{js,jsx,json,css,md}"
     },
     "eslintConfig": {
         "extends": [
             "react-app",
-            "react-app/jest",
             "plugin:react/recommended"
         ]
     },
@@ -50,20 +47,9 @@
     },
     "devDependencies": {
         "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-        "@storybook/addon-actions": "^7.1.1",
-        "@storybook/addon-essentials": "^7.1.1",
-        "@storybook/addon-links": "^7.1.1",
-        "@storybook/cli": "^8.2.9",
-        "@storybook/node-logger": "^7.1.1",
-        "@storybook/preset-create-react-app": "^7.1.1",
-        "@storybook/react": "^7.1.1",
-        "@testing-library/jest-dom": "^5.17.0",
-        "@testing-library/react": "^14.0.0",
-        "@testing-library/user-event": "^14.4.3",
         "eslint": "^8.45.0",
         "eslint-config-prettier": "^8.8.0",
         "eslint-plugin-react": "^7.32.2",
-        "msw": "^1.2.2",
         "prettier": "^2.8.8"
     }
 }

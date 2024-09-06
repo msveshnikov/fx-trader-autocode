@@ -24,7 +24,13 @@ const EconomicCalendar = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
 
-    const { data: events, isLoading, isError, error, refetch } = useQuery(
+    const {
+        data: events,
+        isLoading,
+        isError,
+        error,
+        refetch
+    } = useQuery(
         ['economicCalendar', startDate, endDate],
         () => apiService.getEconomicCalendar(startDate, endDate),
         {
@@ -34,7 +40,7 @@ const EconomicCalendar = () => {
 
     useEffect(() => {
         refetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleFilter = () => {

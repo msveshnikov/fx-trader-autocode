@@ -102,11 +102,7 @@ const MarketNews = () => {
                     disabled={isFetching}
                     sx={{ backgroundColor: theme.palette.primary.main }}
                 >
-                    {isFetching ? (
-                        <CircularProgress size={24} />
-                    ) : (
-                        'Load More'
-                    )}
+                    {isFetching ? <CircularProgress size={24} /> : 'Load More'}
                 </Button>
             </Box>
         </Container>
