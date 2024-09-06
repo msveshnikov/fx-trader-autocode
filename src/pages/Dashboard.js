@@ -8,7 +8,8 @@ import {
     Button,
     useMediaQuery,
     Snackbar,
-    Alert} from '@mui/material';
+    Alert
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 import { Helmet } from 'react-helmet';
@@ -171,9 +172,7 @@ const Dashboard = () => {
                                         ${accountBalance.toFixed(2)}
                                     </Typography>
                                 ) : (
-                                    <Typography>
-                                        Balance unavailable
-                                    </Typography>
+                                    <Typography>Balance unavailable</Typography>
                                 )}
                             </Paper>
                         </Grid>
@@ -226,10 +225,12 @@ const Dashboard = () => {
                                                             {pair}
                                                         </Typography>
                                                         <Typography variant="body2">
-                                                            Bid: {bid.toFixed(5)}
+                                                            Bid:{' '}
+                                                            {bid.toFixed(5)}
                                                         </Typography>
                                                         <Typography variant="body2">
-                                                            Ask: {ask.toFixed(5)}
+                                                            Ask:{' '}
+                                                            {ask.toFixed(5)}
                                                         </Typography>
                                                     </Paper>
                                                 </Grid>

@@ -98,7 +98,9 @@ function App() {
                                     setIsAuthenticated={setIsAuthenticated}
                                 />
                                 {showOnboarding && isAuthenticated && (
-                                    <Onboarding onComplete={handleOnboardingComplete} />
+                                    <Onboarding
+                                        onComplete={handleOnboardingComplete}
+                                    />
                                 )}
                                 <Suspense fallback={<Loading />}>
                                     <Routes>
@@ -233,8 +235,14 @@ function App() {
                                                 </PrivateRoute>
                                             }
                                         />
-                                        <Route path="/privacy" element={<Privacy />} />
-                                        <Route path="/terms" element={<Terms />} />
+                                        <Route
+                                            path="/privacy"
+                                            element={<Privacy />}
+                                        />
+                                        <Route
+                                            path="/terms"
+                                            element={<Terms />}
+                                        />
                                     </Routes>
                                 </Suspense>
                                 <Footer />

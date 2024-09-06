@@ -186,7 +186,8 @@ const apiService = {
                 id: 1,
                 title: 'Fed announces interest rate decision',
                 date: '2023-05-01',
-                imageUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
                 summary:
                     'The Federal Reserve announced its latest interest rate decision...',
                 publishedAt: '2023-05-01T14:30:00Z'
@@ -195,7 +196,8 @@ const apiService = {
                 id: 2,
                 title: 'ECB to hold press conference on monetary policy',
                 date: '2023-05-02',
-                imageUrl: 'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1601597111158-2fceff292cdc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
                 summary:
                     'The European Central Bank is set to hold a press conference...',
                 publishedAt: '2023-05-02T10:00:00Z'
@@ -204,7 +206,8 @@ const apiService = {
                 id: 3,
                 title: 'Bank of Japan maintains ultra-low interest rates',
                 date: '2023-05-03',
-                imageUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
                 summary:
                     'The Bank of Japan has decided to maintain its ultra-low interest rates...',
                 publishedAt: '2023-05-03T06:45:00Z'
@@ -213,7 +216,8 @@ const apiService = {
                 id: 4,
                 title: 'US Dollar strengthens against major currencies',
                 date: '2023-05-04',
-                imageUrl: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
                 summary:
                     'The US Dollar has shown significant strength against major currencies...',
                 publishedAt: '2023-05-04T18:20:00Z'
@@ -230,7 +234,8 @@ const apiService = {
                 id: 6,
                 title: 'Global stock markets react to economic data',
                 date: '2023-05-06',
-                imageUrl: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80',
                 summary:
                     'Global stock markets have shown mixed reactions to the latest economic data...',
                 publishedAt: '2023-05-06T16:00:00Z'
@@ -239,7 +244,8 @@ const apiService = {
                 id: 7,
                 title: 'Cryptocurrency market experiences high volatility',
                 date: '2023-05-07',
-                imageUrl: 'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1518546305927-5a555bb7020d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80',
                 summary:
                     'The cryptocurrency market has experienced significant volatility in recent trading...',
                 publishedAt: '2023-05-07T11:30:00Z'
@@ -248,7 +254,8 @@ const apiService = {
                 id: 8,
                 title: 'IMF releases global economic outlook report',
                 date: '2023-05-08',
-                imageUrl: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1415&q=80',
+                imageUrl:
+                    'https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1415&q=80',
                 summary:
                     'The International Monetary Fund has released its latest global economic outlook report...',
                 publishedAt: '2023-05-08T13:45:00Z'
@@ -320,8 +327,14 @@ const apiService = {
 
     getRealTimeFXRates: async () => {
         await mockDelay(300);
-        const currencyPairs = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD'];
-        return currencyPairs.map(pair => ({
+        const currencyPairs = [
+            'EUR/USD',
+            'GBP/USD',
+            'USD/JPY',
+            'AUD/USD',
+            'USD/CAD'
+        ];
+        return currencyPairs.map((pair) => ({
             pair,
             bid: (Math.random() * 0.5 + 1).toFixed(5),
             ask: (Math.random() * 0.5 + 1.01).toFixed(5),
